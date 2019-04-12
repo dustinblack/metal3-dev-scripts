@@ -144,3 +144,6 @@ if [ "$MANAGE_BR_BRIDGE" == "y" ] ; then
     sudo systemctl restart NetworkManager
   fi
 fi
+
+# Restart libvirtd
+systemctl restart libvirtd

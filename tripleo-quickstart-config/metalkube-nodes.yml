@@ -2,15 +2,15 @@ default_memory: 16384
 default_vcpu: 8
 overcloud_nodes:
   - name: openshift_node_0
-    flavor: openshift_master
+    flavor: openshift_node
     virtualbmc_port: 6230
 
   - name: openshift_node_1
-    flavor: openshift_master
+    flavor: openshift_node
     virtualbmc_port: 6231
 
   - name: openshift_node_2
-    flavor: openshift_master
+    flavor: openshift_node
     virtualbmc_port: 6232
 
 #  - name: openshift_worker_0
@@ -28,7 +28,7 @@ overcloud_nodes:
 node_count: 3
 
 flavors:
-  openshift_master:
+  openshift_node:
     memory: '{{openshift_master_memory|default(default_memory)}}'
     disk: '{{openshift_master_disk|default(default_disk)}}'
     vcpu: '{{openshift_master_vcpu|default(default_vcpu)}}'

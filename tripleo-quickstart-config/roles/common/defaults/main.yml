@@ -148,18 +148,18 @@ networks:
       - "{{ baremetal_network_cidr|nthhost(20) }}"
       - "{{ baremetal_network_cidr|nthhost(60) }}"
     dhcp_hosts:
-      - name: "master-0"
+      - name: "node-0"
         ip: "{{ baremetal_network_cidr | nthhost(20) }}"
-      - name: "master-1"
+      - name: "node-1"
         ip: "{{ baremetal_network_cidr | nthhost(21) }}"
-      - name: "master-2"
+      - name: "node-2"
         ip: "{{ baremetal_network_cidr | nthhost(22) }}"
-      - name: "worker-0"
-        ip: "{{ baremetal_network_cidr | nthhost(23) }}"
-      - name: "worker-1"
-        ip: "{{ baremetal_network_cidr | nthhost(24) }}"
-      - name: "worker-2"
-        ip: "{{ baremetal_network_cidr | nthhost(25) }}"
+      #- name: "worker-0"
+      #  ip: "{{ baremetal_network_cidr | nthhost(23) }}"
+      #- name: "worker-1"
+      #  ip: "{{ baremetal_network_cidr | nthhost(24) }}"
+      #- name: "worker-2"
+      #  ip: "{{ baremetal_network_cidr | nthhost(25) }}"
     nat_port_range:
       - 1024
       - 65535

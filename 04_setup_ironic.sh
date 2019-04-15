@@ -56,6 +56,7 @@ fi
 
 # set password for mariadb
 mariadb_password=$(echo $(date;hostname)|sha256sum |cut -c-20)
+echo mariadbpassword $mariadb_password
 
 # Create pod
 sudo podman pod create -n ironic-pod 

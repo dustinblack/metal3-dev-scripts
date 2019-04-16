@@ -44,15 +44,15 @@ ln -sf "$RHCOS_IMAGE_FILENAME_COMPRESSED" "$RHCOS_IMAGE_FILENAME_LATEST"
 ln -sf "$RHCOS_IMAGE_FILENAME_COMPRESSED.md5sum" "$RHCOS_IMAGE_FILENAME_LATEST.md5sum"
 popd
 
-#for name in ironic ironic-inspector dnsmasq httpd mariadb; do
-#    sudo podman ps | grep -w "$name$" && sudo podman kill $name
-#    sudo podman ps --all | grep -w "$name$" && sudo podman rm $name -f
-#done
+for name in ironic ironic-inspector dnsmasq httpd mariadb; do
+    sudo podman ps | grep -w "$name$" && sudo podman kill $name
+    sudo podman ps --all | grep -w "$name$" && sudo podman rm $name -f
+done
 
 # Remove existing pod
-#if  sudo podman pod exists ironic-pod ; then 
-#    sudo podman pod rm ironic-pod -f
-#fi
+if  sudo podman pod exists ironic-pod ; then 
+    sudo podman pod rm ironic-pod -f
+fi
 
 # set password for mariadb
 #mariadb_password=$(echo $(date;hostname)|sha256sum |cut -c-20)

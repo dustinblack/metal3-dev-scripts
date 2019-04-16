@@ -1,5 +1,7 @@
 # Prepare Chimera Lab
 
+> Note: You can do all of this (except the Red Hat subscription and repo stuff) with the `chimera_prep.sh` script.
+
 ## Operating Environment
 
 * Have $loads of CPU and memory
@@ -52,13 +54,8 @@ You can mount storage to `/opt/dev-scripts` if you need separate storage space f
 ```
 ./01_install_requirements.sh
 ./02_configure_host.sh
-./03_CHIMERA_go_dependency.sh
+./03_ocp_repo_sync.sh
 ./04_CHIMERA_prep_ironic.sh 
+./05_build_ocp_installer.sh
 ```
 
-## Pull container images
-
-```
-podman image pull quay.io/metalkube/metalkube-ironic
-podman image pull quay.io/metalkube/metalkube-ironic-inspector
-```

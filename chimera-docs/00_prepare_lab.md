@@ -1,6 +1,6 @@
 # Prepare Chimera Lab
 
-You can do all of this (except the Red Hat subscription and repo stuff and creating the `config_root.sh` file) via the Makefile.
+You can do all of this (except the Red Hat subscription and repo stuff, enabling VT-d, and creating the `config_root.sh` file) via the Makefile.
 
 This will apply the yum packages and services and also run the lab pre-configure scripts:
 ```
@@ -16,6 +16,7 @@ make chimera_lab_ready
 
 * Have $loads of CPU and memory
 * Install RHEL or CentOS 7.4+
+* Enable VT-d (if you want to PCI-passthrough to VMs)
 * Give your host a FQDN
 * For RHEL, register system and subscribe to _extras_ and _optional_ repos
 * Install virtualization tools
@@ -35,6 +36,11 @@ RHEL/CentOS:
 yum -y groupinstall 'Virtualization Host'
 systemctl enable libvirtd; systemctl start libvirtd
 yum -y install git vim-enhanced
+```
+
+VT-d -- First make sure this is enabled in your BIOS, then edit /etc/default/grub to add `intel_iommu=on` to the `GRUB_CMDLINE_LINUX` var. Then rebuild your grub config and reboot:
+```
+grub2-mkconfig -o /boot/grub2/grub.cfg 
 ```
 
 ## Clone This Repo

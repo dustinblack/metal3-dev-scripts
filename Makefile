@@ -1,6 +1,19 @@
 .PHONY: default all requirements configure repo_sync ironic build ocp_run deploy_bmo clean ocp_cleanup host_cleanup bell
 default: requirements configure repo_sync ironic build ocp_run deploy_bmo bell
 
+chimera_prep_host:
+	./00_CHIMERA_prep_host.sh
+
+chimera_repo_sync:
+	./03_CHIMERA_ocp_repo_sync.sh
+
+chimera_ironic:
+	./04_CHIMERA_prep_ironic.sh
+
+chimera_lab_ready: requirements configure chimera_repo_sync chimera_ironic build
+
+chimera_all: chimera_prep_host chimera_lab_ready
+
 all: default
 
 requirements:

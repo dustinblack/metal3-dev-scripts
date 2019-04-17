@@ -1,6 +1,16 @@
 # Prepare Chimera Lab
 
-> Note: You can do all of this (except the Red Hat subscription and repo stuff) with the `chimera_prep.sh` script.
+You can do all of this (except the Red Hat subscription and repo stuff) via the Makefile.
+
+This will apply the yum packages and services and also run the lab pre-configure scripts:
+```
+make chimera_all
+```
+
+You can also just run the lab pre-configure scripts:
+```
+make chimera_lab_ready
+```
 
 ## Operating Environment
 

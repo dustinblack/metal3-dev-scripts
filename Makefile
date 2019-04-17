@@ -10,7 +10,7 @@ configure:
 	./02_configure_host.sh
 
 repo_sync:
-	./03_ocp_repo_sync.sh
+	./ORIG_03_ocp_repo_sync.sh
 
 ironic:
 	./ORIG_04_setup_ironic.sh

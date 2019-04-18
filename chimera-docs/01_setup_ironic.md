@@ -29,3 +29,13 @@ $PODRUNCMD --name mariadb --entrypoint /bin/runmariadb --env MARIADB_PASSWORD=re
 $PODRUNCMD --name ironic --env MARIADB_PASSWORD=redhat quay.io/dustinblack/metalkube-ironic
 $PODRUNCMD --name ironic-inspector quay.io/dustinblack/metalkube-ironic-inspector
 ```
+
+Take a look at your running containers.
+```
+podman ps
+```
+
+These containers are part of the fundamental bootstrap process used to initially discover and image the baremetal hosts.
+
+## Lab Recording
+[![asciicast](https://asciinema.org/a/xyRStkXotrbvnSPen3944NXn0.svg)](https://asciinema.org/a/xyRStkXotrbvnSPen3944NXn0)

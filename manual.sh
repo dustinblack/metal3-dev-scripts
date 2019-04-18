@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # run steps 01 to 05
+./00_CHIMERA_prep_host.sh
 ./01_install_requirements.sh
 ./02_configure_host.sh
-./03_ocp_repo_sync.sh
+./03_CHIMERA_ocp_repo_sync.sh
 ./04_CHIMERA_prep_ironic.sh 
 ./05_CHIMERA_build_ocp_installer.sh
 

@@ -6,6 +6,7 @@
 
 * Have $loads of CPU and memory
 * Install RHEL or CentOS 7.4+
+* Give your host a FQDN
 * For RHEL, register system and subscribe to _extras_ and _optional_ repos
 * Install virtualization tools
 * Enable libvirtd
@@ -54,7 +55,7 @@ You can mount storage to `/opt/dev-scripts` if you need separate storage space f
 ```
 ./01_install_requirements.sh
 ./02_configure_host.sh
-./03_ocp_repo_sync.sh
+./03_CHIMERA_ocp_repo_sync.sh
 ./04_CHIMERA_prep_ironic.sh 
 ./05_build_ocp_installer.sh
 ```

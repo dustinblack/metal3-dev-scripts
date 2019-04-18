@@ -83,6 +83,23 @@
       when: item is failed
       with_items: "{{ overcloud_extradisks_check.results }}"
 
+#    - name: CHIMERA: Generate PCI passthrough XML
+#      "{{ lookup('template', 'add_nvme.xml.j2') }}"
+#      when: flavors[item[0].flavor].nvmepassthrough|default(false)
+#      with_items: "{{ overcloud_nodes }}"
+
+#    - name: CHIMERA: Detach PCI devices from host
+#      command: >
+#        virsh nodedev-detach pci_0000_<num>_00_0
+#      when: flavors[item[0].flavor].nvmepassthrough|default(false)
+#      with_items: "{{ overcloud_nodes }}"
+
+#    - name: CHIMERA: Attach passthrough NVMe devices
+#      command: >
+#        virsh attach-device <domain> <xml> --live
+#      when: flavors[item[0].flavor].nvmepassthrough|default(false)
+#      with_items: "{{ overcloud_nodes }}"
+
 # Generate the ironic node inventory files.  Note that this
 # task *must* occur after the above overcloud tasks, because if
 # `overcloud_nodes` is defined the template depends on the

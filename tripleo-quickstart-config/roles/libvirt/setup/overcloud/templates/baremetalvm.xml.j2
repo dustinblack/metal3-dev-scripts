@@ -47,6 +47,15 @@
     </video>
 {% endif %}
 
+{% if flavors[item.flavor].nvme_passthrough == true %}
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x{{ item.nvmepcislot }}' slot='0x00' function='0x0'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
+    </hostdev>
+{% endif %}
+
     {{baremetal_vm_device_xml|default('')}}
 
   </devices>

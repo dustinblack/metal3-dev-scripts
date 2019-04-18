@@ -27,5 +27,5 @@ $PODRUNCMD --name dnsmasq --entrypoint /bin/rundnsmasq quay.io/metalkube/metalku
 $PODRUNCMD --name httpd --entrypoint /bin/runhttpd quay.io/metalkube/metalkube-ironic
 $PODRUNCMD --name mariadb --entrypoint /bin/runmariadb --env MARIADB_PASSWORD=redhat quay.io/metalkube/metalkube-ironic
 $PODRUNCMD --name ironic --env MARIADB_PASSWORD=redhat quay.io/metalkube/metalkube-ironic
-$PODRUNCMD --name ironic-inspector quay.io/metalkube-ironic-inspector
+$PODRUNCMD --name ironic-inspector quay.io/metalkube/metalkube-ironic-inspector
 ```

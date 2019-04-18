@@ -5,7 +5,7 @@
 ./02_configure_host.sh
 ./03_ocp_repo_sync.sh
 ./04_CHIMERA_prep_ironic.sh 
-./05_build_ocp_installer.sh
+./05_CHIMERA_build_ocp_installer.sh
 
 # set up ironic
 IRONIC_DATA_DIR=/opt/dev-scripts/ironic

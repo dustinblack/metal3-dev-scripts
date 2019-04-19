@@ -21,4 +21,7 @@ pushd "$GOPATH/src/github.com/openshift-metalkube/kni-installer"
 export MODE=release
 export TAGS="libvirt ironic"
 ./hack/build.sh
+# Undo our timeout changes after the build so that future runs don't fail
+git stash
 popd
+

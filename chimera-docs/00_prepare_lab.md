@@ -25,6 +25,7 @@ yum -y install git
 **RHEL/CentOS VT-d:**
 First make sure this is enabled in your BIOS, then edit `/etc/default/grub` to add `intel_iommu=on` to the `GRUB_CMDLINE_LINUX` var. Then rebuild your grub config and reboot:
 ```
+sed -i s/quiet/quiet\ intel_iommu\=on/ /etc/default/grub
 grub2-mkconfig -o /boot/grub2/grub.cfg 
 init 6
 ```
@@ -41,6 +42,8 @@ cd metalshift-chimera
 > Note: `config_*.sh` is already in the `.gitignore` file.
 
 Doing this here for the root user, but note that the scripts look for `config_${USER}.sh`
+
+> Note: We actually need a temporary shared pull secret for now, rather than the user-assigned one.
 
 ```
 cp config_example.sh config_root.sh

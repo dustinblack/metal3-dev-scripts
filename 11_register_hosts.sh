@@ -3,6 +3,7 @@
 set -ex
 
 source common.sh
+source ocp_install_env.sh
 eval "$(go env)"
 
 # Get the latest bits for baremetal-operator
@@ -33,7 +34,7 @@ function make_bm_masters() {
            -password "$password" \
            -user "$user" \
            -machine-namespace openshift-machine-api \
-           -machine  "$(echo $name | sed 's/openshift/ostest/')" \
+           -machine  "$(echo $name | sed s/openshift/${CLUSTER_NAME}/)" \
            -boot-mac "$mac" \
            "$name"
     done
@@ -77,4 +78,21 @@ list_workers | make_bm_workers | tee $SCRIPTDIR/ocp/worker_crs.yaml
 
 oc --config ocp/auth/kubeconfig apply -f $SCRIPTDIR/ocp/master_crs.yaml --namespace=openshift-machine-api
 
+# Check if file exists
+[ -s "$SCRIPTDIR/ocp/worker_crs.yaml" ] || exit 0
+
 oc --config ocp/auth/kubeconfig apply -f $SCRIPTDIR/ocp/worker_crs.yaml --namespace=openshift-machine-api
+
+wait_for_worker() {
+    worker=$1
+    echo "Waiting for worker $worker to appear ..."
+    while [ "$(oc get nodes | grep $worker)" = "" ]; do sleep 5; done
+    TIMEOUT_MINUTES=15
+    echo "$worker registered, waiting $TIMEOUT_MINUTES minutes for Ready condition ..."
+    oc wait node/$worker --for=condition=Ready --timeout=$[${TIMEOUT_MINUTES} * 60]s
+}
+
+wait_for_worker worker-0
+
+# Ensures IPs get set on the worker Machine
+./add-machine-ips.sh

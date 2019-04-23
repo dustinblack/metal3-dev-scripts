@@ -8,9 +8,14 @@ source ${BASEDIR}/common.sh
 figlet "Deploying Kafka Strimzi" | lolcat
 eval "$(go env)"
 
+STRIMZI_VERSION="0.11.2"
+KAFKA_PRODUCER_VERSION="7463f3d9790229d70304805e327e58406e950f1e"
 export KAFKAPATH="$GOPATH/src/github.com/strimzi/strimzi-kafka-operator"
 export KAFKAPRODUCER_PATH="$GOPATH/src/github.com/scholzj/kafka-test-apps"
 cd $KAFKAPATH
+
+# Pinning Strimzi to the latest stable release
+git reset --hard tags/${STRIMZI_VERSION}
 
 # Apply RBAC
 oc new-project ${KAFKA_NAMESPACE}
@@ -22,7 +27,7 @@ oc apply -f install/cluster-operator/032-RoleBinding-strimzi-cluster-operator-to
 # Install Operator
 oc apply -f install/cluster-operator -n ${KAFKA_NAMESPACE}
 sleep 5
-oc wait --for condition=ready pod -l name=strimzi-cluster-operator -n ${KAFKA_NAMESPACE} --timeout=120s
+oc wait --for condition=ready pod -l name=strimzi-cluster-operator -n ${KAFKA_NAMESPACE} --timeout=300s
 
 # Modify Kafka cluster & Deploy
 sed -i "s/my-cluster/${KAFKA_CLUSTERNAME}/" metrics/examples/kafka/kafka-metrics.yaml
@@ -31,22 +36,22 @@ sed -i "s/my-cluster/${KAFKA_CLUSTERNAME}/" metrics/examples/kafka/kafka-connect
 sed -i "s/my-connect/${KAFKA_CLUSTERNAME}/" metrics/examples/kafka/kafka-connect-metrics.yaml
 oc apply -f metrics/examples/kafka/kafka-metrics.yaml -n ${KAFKA_NAMESPACE}
 sleep 5
-oc wait --for condition=ready pod -l strimzi.io/cluster=${KAFKA_CLUSTERNAME} -n ${KAFKA_NAMESPACE} --timeout=120s
+oc wait --for condition=ready pod -l strimzi.io/cluster=${KAFKA_CLUSTERNAME} -n ${KAFKA_NAMESPACE} --timeout=300s
 oc apply -f metrics/examples/kafka/kafka-connect-metrics.yaml -n ${KAFKA_NAMESPACE}
 sleep 5
-oc wait --for condition=ready pod -l strimzi.io/kind=KafkaConnect -n ${KAFKA_NAMESPACE} --timeout=240s
+oc wait --for condition=ready pod -l strimzi.io/kind=KafkaConnect -n ${KAFKA_NAMESPACE} --timeout=600s
 
 # Modify Prometheus & Deploy
 sed -i "s/myproject/${KAFKA_CLUSTERNAME}/" metrics/examples/prometheus/prometheus.yaml
 oc apply -f metrics/examples/prometheus/prometheus.yaml -n ${KAFKA_NAMESPACE}
 oc apply -f metrics/examples/prometheus/alerting-rules.yaml -n ${KAFKA_NAMESPACE}
-oc wait --for condition=ready pod -l name=prometheus -n ${KAFKA_NAMESPACE} --timeout=120s
+oc wait --for condition=ready pod -l name=prometheus -n ${KAFKA_NAMESPACE} --timeout=300s
 oc apply -f metrics/examples/prometheus/alertmanager.yaml -n ${KAFKA_NAMESPACE}
-oc wait --for condition=ready pod -l name=alertmanager -n ${KAFKA_NAMESPACE} --timeout=120s
+oc wait --for condition=ready pod -l name=alertmanager -n ${KAFKA_NAMESPACE} --timeout=300s
 
 # Deploy Grafana
 oc apply -f metrics/examples/grafana/grafana.yaml -n ${KAFKA_NAMESPACE}
-oc wait --for condition=ready pod -l name=grafana -n ${KAFKA_NAMESPACE} --timeout=120s
+oc wait --for condition=ready pod -l name=grafana -n ${KAFKA_NAMESPACE} --timeout=300s
 
 # Expose Grafana & Prometheus
 oc expose svc prometheus -n ${KAFKA_NAMESPACE} || echo "Prometheus route already exists" 
@@ -54,8 +59,13 @@ oc expose svc grafana -n ${KAFKA_NAMESPACE} || echo "Grafana route already exist
 
 figlet "Deploying Kafka Producer/Consumer" | lolcat
 
-# Modify & Deploy Kafka Producer/Consumer
+# Kafka Producer/Consumer Deployment
 cd $KAFKAPRODUCER_PATH 
+
+# Pinning Strimzi to the latest stable release
+git reset --hard tags/${KAFKA_PRODUCER_VERSION}
+
+# Modify & Deploy Kafka Producer/Consumer
 sed -i "s/my-cluster-kafka-bootstrap:9092/${KAFKA_CLUSTERNAME}-kafka-bootstrap:9092/" kafka-producer.yaml
 sed -i "s/my-cluster-kafka-bootstrap:9092/${KAFKA_CLUSTERNAME}-kafka-bootstrap:9092/" kafka-consumer.yaml
 sed -i "s/my-topic/${KAFKA_PRODUCER_TOPIC}/" kafka-producer.yaml
@@ -63,7 +73,7 @@ sed -i "s/my-topic/${KAFKA_PRODUCER_TOPIC}/" kafka-consumer.yaml
 sed -i "s/\"10000\"/\"${KAFKA_PRODUCER_TIMER}\"/" kafka-producer.yaml
 oc apply -f kafka-producer.yaml -n ${KAFKA_NAMESPACE}
 oc apply -f kafka-consumer.yaml -n ${KAFKA_NAMESPACE}
-oc wait --for condition=ready pod -l app=kafka-consumer -n ${KAFKA_NAMESPACE} --timeout=120s
+oc wait --for condition=ready pod -l app=kafka-consumer -n ${KAFKA_NAMESPACE} --timeout=300s
 
 # Add Grafana Dashboards and Datasource
 GRAFANA_ROUTE=`oc get route grafana --template='{{ .spec.host }}'`

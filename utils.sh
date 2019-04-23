@@ -4,7 +4,7 @@ set -o pipefail
 
 function generate_assets() {
   rm -rf assets/generated && mkdir assets/generated
-  for file in $(find assets/templates -type f -printf "%P\n"); do
+  for file in $(find assets/templates/ -iname '*.yaml' -type f -printf "%P\n"); do
       echo "Templating ${file} to assets/generated/${file}"
       cp assets/{templates,generated}/${file}
 
@@ -25,6 +25,11 @@ function create_cluster() {
     cp ${assets_dir}/install-config.yaml{,.tmp}
     $GOPATH/src/github.com/openshift-metalkube/kni-installer/bin/kni-install --dir "${assets_dir}" --log-level=debug create manifests
 
+    # TODO - consider adding NTP server config to install-config.yaml instead
+    if host clock.redhat.com ; then
+        cp assets/templates/99_worker-chronyd-redhat.yaml.optional assets/templates/99_worker-chronyd-redhat.yaml
+        cp assets/templates/99_master-chronyd-redhat.yaml.optional assets/templates/99_master-chronyd-redhat.yaml
+    fi
     generate_assets
     mkdir -p ${assets_dir}/openshift
     cp -rf assets/generated/*.yaml ${assets_dir}/openshift
@@ -37,7 +42,7 @@ function wait_for_cvo_finish() {
     local assets_dir
 
     assets_dir="$1"
-    $GOPATH/src/github.com/openshift-metalkube/kni-installer/bin/kni-install --dir "${assets_dir}" --log-level=debug wait-for cluster-ready
+    $GOPATH/src/github.com/openshift-metalkube/kni-installer/bin/kni-install --dir "${assets_dir}" --log-level=debug wait-for install-complete
 }
 
 function wait_for_json() {
@@ -94,58 +99,99 @@ function master_node_val() {
     jq -r ".nodes[${n}].${val}" $MASTER_NODES_FILE
 }
 
-function master_node_to_install_config() {
-    local master_idx
-    master_idx="$1"
-
-    driver=$(master_node_val ${master_idx} "driver")
-    if [ $driver == "ipmi" ] ; then
-        driver=ipmi
-        driver_prefix=ipmi
-        driver_interface=ipmitool
-    elif [ $driver == "idrac" ] ; then
-        driver=idrac
-        driver_prefix=drac
-        driver_interface=idrac
-    fi
-
-    name=$(master_node_val ${master_idx} "name")
-    mac=$(master_node_val ${master_idx} "ports[0].address")
-    local_gb=$(master_node_val ${master_idx} "properties.local_gb")
-    cpu_arch=$(master_node_val ${master_idx} "properties.cpu_arch")
-
-    port=$(master_node_val ${master_idx} "driver_info.${driver_prefix}_port // \"\"")
-    if [ -n "$port" ]; then
-	port_prefix="${driver_prefix}_port: \"${port}\""
-        port_newline=$'\n        '
-    fi
-    username=$(master_node_val ${master_idx} "driver_info.${driver_prefix}_username")
-    password=$(master_node_val ${master_idx} "driver_info.${driver_prefix}_password")
-    address=$(master_node_val ${master_idx} "driver_info.${driver_prefix}_address")
-
-    deploy_kernel=$(master_node_val ${master_idx} "driver_info.deploy_kernel")
-    deploy_ramdisk=$(master_node_val ${master_idx} "driver_info.deploy_ramdisk")
+function master_node_map_to_install_config() {
+    local num_masters
+    num_masters="$1"
 
     cat <<EOF
-      master_$master_idx:
-        name: $name
-        port_address: "${mac}"
-        driver: "${driver}"
-        management_interface: "${driver_interface}"
-        power_interface: "${driver_interface}"
-        vendor_interface: "no-vendor"
-      properties_$master_idx:
-        local_gb: "${local_gb}"
-        cpu_arch: "${cpu_arch}"
-      root_device_$master_idx:
-        name: "${ROOT_DISK}"
-      driver_info_$master_idx:
-        ${port_prefix}${port_newline}${driver_prefix}_username: "${username}"
-        ${driver_prefix}_password: "${password}"
-        ${driver_prefix}_address: "${address}"
-        deploy_kernel:  "${deploy_kernel}"
-        deploy_ramdisk: "${deploy_ramdisk}"
+      master_nodes:
 EOF
+
+    for ((master_idx=0;master_idx<$1;master_idx++)); do
+      driver=$(master_node_val ${master_idx} "driver")
+      if [ $driver == "ipmi" ] ; then
+          driver=ipmi
+          driver_prefix=ipmi
+          driver_interface=ipmitool
+      elif [ $driver == "idrac" ] ; then
+          driver=idrac
+          driver_prefix=drac
+          driver_interface=idrac
+      fi
+
+      name=$(master_node_val ${master_idx} "name")
+      mac=$(master_node_val ${master_idx} "ports[0].address")
+      cat <<EOF
+        openshift-master-$master_idx:
+          name: $name
+          port_address: "${mac}"
+          driver: "${driver}"
+          management_interface: "${driver_interface}"
+          power_interface: "${driver_interface}"
+          vendor_interface: "no-vendor"
+EOF
+
+    done
+
+    cat <<EOF
+      properties:
+EOF
+
+    for ((master_idx=0;master_idx<$1;master_idx++)); do
+      local_gb=$(master_node_val ${master_idx} "properties.local_gb")
+      cpu_arch=$(master_node_val ${master_idx} "properties.cpu_arch")
+
+      cat <<EOF
+        openshift-master-$master_idx:
+          local_gb: "${local_gb}"
+          cpu_arch: "${cpu_arch}"
+EOF
+
+    done
+
+    cat <<EOF
+      root_devices:
+EOF
+
+    for ((master_idx=0;master_idx<$1;master_idx++)); do
+      cat <<EOF
+        openshift-master-$master_idx:
+          name: "${ROOT_DISK}"
+EOF
+    done
+
+    cat <<EOF
+      driver_infos:
+EOF
+
+    for ((master_idx=0;master_idx<$1;master_idx++)); do
+      port=$(master_node_val ${master_idx} "driver_info.${driver_prefix}_port // \"\"")
+      username=$(master_node_val ${master_idx} "driver_info.${driver_prefix}_username")
+      password=$(master_node_val ${master_idx} "driver_info.${driver_prefix}_password")
+      address=$(master_node_val ${master_idx} "driver_info.${driver_prefix}_address")
+
+      deploy_kernel=$(master_node_val ${master_idx} "driver_info.deploy_kernel")
+      deploy_ramdisk=$(master_node_val ${master_idx} "driver_info.deploy_ramdisk")
+
+      cat <<EOF
+        openshift-master-$master_idx:
+EOF
+
+      if [ -n "$port" ]; then
+          cat <<EOF
+          ${driver_prefix}_port: "${port}"
+EOF
+      fi
+
+      cat <<EOF
+          ${driver_prefix}_username: "${username}"
+          ${driver_prefix}_password: "${password}"
+          ${driver_prefix}_address: "${address}"
+          deploy_kernel:  "${deploy_kernel}"
+          deploy_ramdisk: "${deploy_ramdisk}"
+EOF
+
+    done
 }
 
 function patch_ep_host_etcd() {

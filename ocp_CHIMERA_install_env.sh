@@ -12,8 +12,13 @@ export RHCOS_IMAGE_FILENAME_LATEST=$(readlink -f rhcos-ootpa-latest.qcow2 | rev 
 # Not used by the installer.  Used by s.sh.
 export SSH_PRIV_KEY="$HOME/.ssh/id_rsa"
 
-# Temporary workaround pending merge of https://github.com/openshift/machine-api-operator/pull/246
-export OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE="registry.svc.ci.openshift.org/openshift/origin-release:v4.0"
+#
+# See https://origin-release.svc.ci.openshift.org/ for release details
+#
+# The release we default to here is pinned and known to work with our current
+# version of kni-installer.
+#
+export OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE="registry.svc.ci.openshift.org/ocp/release:4.0.0-0.ci-2019-04-17-133604"
 
 function generate_ocp_install_config() {
     local outdir
@@ -21,16 +26,20 @@ function generate_ocp_install_config() {
     outdir="$1"
 
     cat > "${outdir}/install-config.yaml" << EOF
-apiVersion: v1beta3
+apiVersion: v1beta4
 baseDomain: ${BASE_DOMAIN}
 metadata:
   name: ${CLUSTER_NAME}
+compute:
+- name: worker
+  replicas: 1
+controlPlane:
+  name: master
+  replicas: ${NUM_MASTERS}
 platform:
   baremetal:
     nodes:
-$(master_node_to_install_config 0)
-$(master_node_to_install_config 1)
-$(master_node_to_install_config 2)
+$(master_node_map_to_install_config $NUM_MASTERS)
     master_configuration:
       image_source: "http://172.22.0.1/images/$RHCOS_IMAGE_FILENAME_LATEST"
       image_checksum: $(curl http://172.22.0.1/images/$RHCOS_IMAGE_FILENAME_LATEST.md5sum)

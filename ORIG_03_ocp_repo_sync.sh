@@ -21,18 +21,19 @@ function sync_go_repo_and_patch {
     git am --abort || true
     git checkout master
     git pull --rebase origin master
-    git branch -D we_dont_need_no_stinkin_patches || true
-    git checkout -b we_dont_need_no_stinkin_patches
+    if test "$#" -gt "2" ; then
+        git branch -D metalkube || true
+        git checkout -b metalkube
 
-    shift 3
-    for arg in "$@"; do
-        curl -L $arg | git am
-    done
+        shift; shift;
+        for arg in "$@"; do
+            curl -L $arg | git am
+        done
+    fi
     popd
 }
 
 sync_go_repo_and_patch github.com/openshift-metalkube/kni-installer https://github.com/openshift-metalkube/kni-installer.git
-
 sync_go_repo_and_patch github.com/openshift-metalkube/facet https://github.com/openshift-metalkube/facet.git
 
 # Build facet
@@ -62,6 +63,9 @@ sync_go_repo_and_patch github.com/metalkube/baremetal-operator https://github.co
 
 # Install rook repository
 sync_go_repo_and_patch github.com/rook/rook https://github.com/rook/rook.git
+
+# Install ceph-mixin repository
+sync_go_repo_and_patch github.com/ceph/ceph-mixins https://github.com/ceph/ceph-mixins.git
 
 # Install Kafka Strimzi repository
 sync_go_repo_and_patch github.com/strimzi/strimzi-kafka-operator https://github.com/strimzi/strimzi-kafka-operator.git

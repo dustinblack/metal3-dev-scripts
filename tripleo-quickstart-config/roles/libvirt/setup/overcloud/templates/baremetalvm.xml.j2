@@ -59,6 +59,17 @@
     </hostdev>
 {% endif %}
 
+{% if flavors[item.flavor].attach_block_device == true %}
+    <disk type='block' device='disk'>
+      <driver name='qemu' type='raw'/>
+      <source dev='{{ item.blockdev }}'/>
+      <backingStore/>
+      <target dev='vdb' bus='virtio'/>
+      <alias name='virtio-disk2'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
+    </disk>
+{% endif %}
+
     {{baremetal_vm_device_xml|default('')}}
 
   </devices>

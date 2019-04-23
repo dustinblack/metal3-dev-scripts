@@ -1,9 +1,13 @@
 # Chimera Lab
 
 * [Prepare Lab](00_prepare_lab.md)
-* [Lab 01: Setup Ironic](01_setup_ironic.md)
-* [Lab 02: Install OCP](02_install_ocp.md)
-* [Lab 03: Deploy Rook](03_deploy_rook.md)
-* Lab 04:
+* [LAB1: Setup Ironic](01_setup_ironic.md)
+* [DEMO1: Run OCP Installer](02_install_ocp.md)
+* [LAB2: OCP Web Interface](03_ocp_ui.md)
+* [LAB3: Deploy Rook & Ceph](04_deploy_rook.md)
+* [DEMO2: Ceph in UI](05_ceph_in_ui.md)
+* [LAB4: Deploy Kubevirt](06_deploy_kubevirt.md)
+* [DEMO3: Kubevirt in UI](07_kubevirt_in_ui.md)
+* [LAB5: VM and Container Workloads](08_workloads.md)
 
-_[Raw lab notes](lab_log.md)_
+_[old raw lab notes](lab_log.md)_

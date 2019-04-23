@@ -70,3 +70,16 @@ If you've already run this on the system before then the yum and libvirt stuff c
 ```
 make chimera_lab_ready
 ```
+
+## Remote network access
+
+The simplest way to access the OCP network is to add physical interfaces to the _baremetal_ bridge. An external host connected to the bridged interface will then get DHCP assignments from the already-running dnsmasq for that network.
+
+For the Chimera box, we need to add interfaces `enp7s0` and `enp12s0` to the bridge.
+
+```
+brctl addif baremetal enp7s0
+brctl addif baremetal enp12s0
+```
+
+You may need to adjust `/etc/resolv.conf` on the connected host to move the 192.168.111.1 DNS server to the top of the list, or otherwise adjust your configuration so that name resolution on the OCP network functions.

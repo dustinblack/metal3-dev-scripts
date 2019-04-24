@@ -4,18 +4,21 @@ overcloud_nodes:
   - name: openshift_node_0
     nvmepcislot: 03
     blockdev: /dev/nvme1n1
+    qcow2: nvme1n1
     flavor: openshift_node
     virtualbmc_port: 6230
 
   - name: openshift_node_1
     nvmepcislot: 04
     blockdev: /dev/nvme2n1
+    qcow2: nvme2n1
     flavor: openshift_node
     virtualbmc_port: 6231
 
   - name: openshift_node_2
     nvmepcislot: 05
     blockdev: /dev/nvme3n1
+    qcow2: nvme3n1
     flavor: openshift_node
     virtualbmc_port: 6232
 
@@ -35,6 +38,7 @@ flavors:
     #      and it will likely break your environment if you enable it.
     nvme_passthrough: false
     attach_block_device: false
+    attach_qcow2: false
 
 #  openshift_worker:
 #    memory: '{{openshift_worker_memory|default(default_memory)}}'

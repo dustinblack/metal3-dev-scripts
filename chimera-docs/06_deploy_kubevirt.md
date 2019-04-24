@@ -37,4 +37,6 @@ watch oc get pods -n kubevirt
 Once they are all up, check the webfrontend running on port 9000
 
 TODO: Add the kubevirt git cloning to the prep section
+      git clone https://github.com/kubevirt/web-ui-operator.git
       Add the virtctl download as well
+      wget https://github.com/kubevirt/kubevirt/releases/download/v0.15.0/virtctl-v0.15.0-linux-amd64

@@ -12,6 +12,12 @@ We need to first run a cleanup script to ensure that any previous Ceph deploymen
 chimera-rook/cleanup.sh
 ```
 
+Login to the cluster.
+```
+export KUBECONFIG=/root/metalshift-chimera/ocp/auth/kubeconfig
+oc login -u system:admin
+```
+
 We create a security context constraint and then deploy the rook.io operator.
 ```
 oc create -f chimera-rook/scc.yaml 

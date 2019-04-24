@@ -75,3 +75,7 @@ sync_go_repo_and_patch github.com/scholzj/kafka-test-apps https://github.com/sch
 
 # Install web ui operator repository
 sync_go_repo_and_patch github.com/kubevirt/web-ui-operator https://github.com/kubevirt/web-ui-operator master
+
+# Get the virtctl binary downloaded to /usr/local/bin
+wget https://github.com/kubevirt/kubevirt/releases/download/v0.15.0/virtctl-v0.15.0-linux-amd64 -O /usr/local/bin/virtctl 
+chmod 755 /usr/local/bin/virtctl

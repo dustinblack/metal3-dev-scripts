@@ -3,16 +3,19 @@ default_vcpu: 8
 overcloud_nodes:
   - name: openshift_node_0
     nvmepcislot: 03
+    blockdev: /dev/nvme1n1
     flavor: openshift_node
     virtualbmc_port: 6230
 
   - name: openshift_node_1
     nvmepcislot: 04
+    blockdev: /dev/nvme2n1
     flavor: openshift_node
     virtualbmc_port: 6231
 
   - name: openshift_node_2
     nvmepcislot: 05
+    blockdev: /dev/nvme3n1
     flavor: openshift_node
     virtualbmc_port: 6232
 
@@ -31,6 +34,7 @@ flavors:
     #NOTE: This nvme_passthrough thing is a hack for a particular lab system
     #      and it will likely break your environment if you enable it.
     nvme_passthrough: false
+    attach_block_device: false
 
 #  openshift_worker:
 #    memory: '{{openshift_worker_memory|default(default_memory)}}'

@@ -34,6 +34,19 @@ Wait for the pod creation to finish, watch it using
 watch oc get pods -n kubevirt-web-ui
 ```
 
+## Spin up a fedora VM
+
+To run a fedora VM we need a PVC for it so we can provide ceph-based storage to it:
+```
+oc create -f chimera-kubevirt/fedora-pvc.yaml
+oc create -f chimera-kubevirt/fedora-vm.yaml
+```
+Watch the VM being spun up:
+```
+watch oc get vmis
+```
+
+
 In order to create a VM from a local image, we need to deploy CDI (containerized data importer) so that we can use PVCs as disks for VMs.
 CDI supports .img, .iso and .qcow2 images.
 

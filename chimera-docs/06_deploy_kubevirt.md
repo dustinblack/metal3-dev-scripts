@@ -20,7 +20,7 @@ So now that kubevirt is up and running, we need to get the UI operator deployed 
 ```
 oc new-project kubevirt-web-ui
 oc project
-cd ~/web-ui-operator/deploy
+cd /root/go/src/github.com/kubevirt/web-ui-operator/deploy
 oc apply -f service_account.yaml
 oc apply -f role.yaml
 oc apply -f role_binding.yaml

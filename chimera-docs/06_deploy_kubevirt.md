@@ -1,5 +1,7 @@
 # Deploy kubevirt 
 
+<img src="https://kubevirt.io/user-guide/docs/latest/_images/KubeVirt_icon.png" alt="Kubevirt Logo" height="200px">
+
 ## Intro
 
 

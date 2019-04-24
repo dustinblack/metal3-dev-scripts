@@ -81,12 +81,5 @@ oc exec -n rook-ceph $TOOLBOX -- rbd ls
 oc exec -n rook-ceph $TOOLBOX -- rbd info $PV
 ```
 
-Cleanup our test PVC.
-```
-oc delete -f chimera-rook/pvctest.yaml
-oc get pvc
-oc get pv
-```
-
 ## Lab Recording
 TODO

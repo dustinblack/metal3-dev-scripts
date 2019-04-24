@@ -31,7 +31,7 @@ oc apply -f crds/kubevirt_v1alpha1_kwebui_cr.yaml
 
 Wait for the pod creation to finish, watch it using
 ```
-watch oc get pods -n kubevirt
+watch oc get pods -n kubevirt-web-ui
 ```
 
 Once they are all up, check the webfrontend running on port 9000

@@ -132,4 +132,3 @@ spec:
               value: *image
       securityContext:
         runAsNonRoot: true
-~                                      

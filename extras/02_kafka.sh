@@ -5,6 +5,14 @@ BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 source ${BASEDIR}/common.sh
 
+# Kafka Strimzi configs
+KAFKA_NAMESPACE=${KAFKA_NAMESPACE:-strimzi}
+KAFKA_CLUSTERNAME=${KAFKA_CLUSTERNAME:-strimzi}
+KAFKA_PVC_SIZE=${KAFKA_PVC_SIZE:-100}
+# Kafka producer will generate 10 msg/sec/pod with a value of 100 (by default)
+KAFKA_PRODUCER_TIMER=${KAFKA_PRODUCER_TIMER:-"100"}
+KAFKA_PRODUCER_TOPIC=${KAFKA_PRODUCER_TOPIC:-strimzi-topic}
+
 figlet "Deploying Kafka Strimzi" | lolcat
 eval "$(go env)"
 
@@ -31,7 +39,7 @@ oc wait --for condition=ready pod -l name=strimzi-cluster-operator -n ${KAFKA_NA
 
 # Modify Kafka cluster & Deploy
 sed -i "s/my-cluster/${KAFKA_CLUSTERNAME}/" metrics/examples/kafka/kafka-metrics.yaml
-sed -i "s/100Gi/${KAFKA_PVC_SIZE}Gi/" metrics/examples/kafka/kafka-metrics.yaml
+sed -i "s/1Gi/${KAFKA_PVC_SIZE}Gi/" metrics/examples/kafka/kafka-metrics.yaml
 sed -i "s/my-cluster/${KAFKA_CLUSTERNAME}/" metrics/examples/kafka/kafka-connect-metrics.yaml
 sed -i "s/my-connect/${KAFKA_CLUSTERNAME}/" metrics/examples/kafka/kafka-connect-metrics.yaml
 oc apply -f metrics/examples/kafka/kafka-metrics.yaml -n ${KAFKA_NAMESPACE}
@@ -45,6 +53,7 @@ oc wait --for condition=ready pod -l strimzi.io/kind=KafkaConnect -n ${KAFKA_NAM
 sed -i "s/myproject/${KAFKA_CLUSTERNAME}/" metrics/examples/prometheus/prometheus.yaml
 oc apply -f metrics/examples/prometheus/prometheus.yaml -n ${KAFKA_NAMESPACE}
 oc apply -f metrics/examples/prometheus/alerting-rules.yaml -n ${KAFKA_NAMESPACE}
+sleep 5
 oc wait --for condition=ready pod -l name=prometheus -n ${KAFKA_NAMESPACE} --timeout=300s
 oc apply -f metrics/examples/prometheus/alertmanager.yaml -n ${KAFKA_NAMESPACE}
 oc wait --for condition=ready pod -l name=alertmanager -n ${KAFKA_NAMESPACE} --timeout=300s
@@ -63,7 +72,7 @@ figlet "Deploying Kafka Producer/Consumer" | lolcat
 cd $KAFKAPRODUCER_PATH 
 
 # Pinning Strimzi to the latest stable release
-git reset --hard tags/${KAFKA_PRODUCER_VERSION}
+git checkout ${KAFKA_PRODUCER_VERSION}
 
 # Modify & Deploy Kafka Producer/Consumer
 sed -i "s/my-cluster-kafka-bootstrap:9092/${KAFKA_CLUSTERNAME}-kafka-bootstrap:9092/" kafka-producer.yaml
@@ -76,8 +85,8 @@ oc apply -f kafka-consumer.yaml -n ${KAFKA_NAMESPACE}
 oc wait --for condition=ready pod -l app=kafka-consumer -n ${KAFKA_NAMESPACE} --timeout=300s
 
 # Add Grafana Dashboards and Datasource
-GRAFANA_ROUTE=`oc get route grafana --template='{{ .spec.host }}'`
-PROMETHEUS_ROUTE=`oc get route prometheus --template='{{ .spec.host }}'`
+GRAFANA_ROUTE=`oc get route grafana -n ${KAFKA_NAMESPACE} --template='{{ .spec.host }}'`
+PROMETHEUS_ROUTE=`oc get route prometheus -n ${KAFKA_NAMESPACE} --template='{{ .spec.host }}'`
 curl -X "POST" "http://${GRAFANA_ROUTE}/api/datasources" -H "Content-Type: application/json" --user admin:admin --data-binary '{ "name":"Prometheus","type":"prometheus","access":"proxy","url":"http://'${PROMETHEUS_ROUTE}'","basicAuth":false,"isDefault":true }'
 
 # build and POST the Kafka dashboard to Grafana

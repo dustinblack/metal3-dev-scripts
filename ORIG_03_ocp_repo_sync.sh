@@ -20,7 +20,8 @@ function sync_go_repo_and_patch {
 
     git am --abort || true
     git checkout master
-    git pull --rebase origin master
+    git fetch origin
+    git rebase origin/master
     if test "$#" -gt "2" ; then
         git branch -D metalkube || true
         git checkout -b metalkube
@@ -34,17 +35,19 @@ function sync_go_repo_and_patch {
 }
 
 sync_go_repo_and_patch github.com/openshift-metalkube/kni-installer https://github.com/openshift-metalkube/kni-installer.git
-sync_go_repo_and_patch github.com/openshift-metalkube/facet https://github.com/openshift-metalkube/facet.git
 
 # Build facet
-go get -v github.com/rakyll/statik
-pushd "${GOPATH}/src/github.com/openshift-metalkube/facet"
-yarn install
-./build.sh
-popd
+# FIXME(russellb) - disabled due to build failure related to metal3 rename
+#sync_go_repo_and_patch github.com/openshift-metalkube/facet https://github.com/openshift-metalkube/facet.git
+#go get -v github.com/rakyll/statik
+#pushd "${GOPATH}/src/github.com/openshift-metalkube/facet"
+#yarn install
+#./build.sh
+#popd
 
 # Install Go dependency management tool
 # Using pre-compiled binaries instead of installing from source
+mkdir -p $GOPATH/bin
 curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 export PATH="${GOPATH}/bin:$PATH"
 
@@ -60,6 +63,11 @@ popd
 
 # Install baremetal-operator
 sync_go_repo_and_patch github.com/metalkube/baremetal-operator https://github.com/metalkube/baremetal-operator.git
+# FIXME(dhellmann): Use the pre-rename version of the operator until
+# this repository is ready for the renamed version.
+pushd $GOPATH/src/github.com/metalkube/baremetal-operator
+git checkout origin/metalkube
+popd
 
 # Install rook repository
 sync_go_repo_and_patch github.com/rook/rook https://github.com/rook/rook.git

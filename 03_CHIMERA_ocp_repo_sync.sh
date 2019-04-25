@@ -34,15 +34,18 @@ function sync_go_repo_and_patch {
 sync_go_repo_and_patch github.com/openshift-metalkube/kni-installer https://github.com/openshift-metalkube/kni-installer.git master
 #sync_go_repo_and_patch github.com/openshift-metalkube/kni-installer https://github.com/openshift-metalkube/kni-installer.git 26894a5d8e19fde0d776abb0399b7cf6525972e9
 
-sync_go_repo_and_patch github.com/openshift-metalkube/facet https://github.com/openshift-metalkube/facet.git master
+# FIXME(russellb) - disabled due to build failure related to metal3 rename
+#sync_go_repo_and_patch github.com/openshift-metalkube/facet https://github.com/openshift-metalkube/facet.git master
 #sync_go_repo_and_patch github.com/openshift-metalkube/facet https://github.com/openshift-metalkube/facet.git b940bfab4e38a93826eba6dd3d876d6907f1642c
 
 # Build facet
-go get -v github.com/rakyll/statik
-pushd "${GOPATH}/src/github.com/openshift-metalkube/facet"
-yarn install
-./build.sh
-popd
+#go get -v github.com/rakyll/statik
+#pushd "${GOPATH}/src/github.com/openshift-metalkube/facet"
+#yarn install
+#./build.sh
+#popd
+
+mkdir -p $GOPATH/bin
 
 # Install Go dependency management tool
 # Using pre-compiled binaries instead of installing from source
@@ -63,9 +66,18 @@ popd
 # Install baremetal-operator
 sync_go_repo_and_patch github.com/metalkube/baremetal-operator https://github.com/metalkube/baremetal-operator.git master
 #sync_go_repo_and_patch github.com/metalkube/baremetal-operator https://github.com/metalkube/baremetal-operator.git d1a26380780ed0a2068007a1440f5a239bdc626e
+# FIXME(dhellmann): Use the pre-rename version of the operator until
+# this repository is ready for the renamed version.
+pushd $GOPATH/src/github.com/metalkube/baremetal-operator
+git checkout origin/metalkube
+popd
+
 
 # Install rook repository
 sync_go_repo_and_patch github.com/rook/rook https://github.com/rook/rook.git master
+
+# Install ceph-mixin repository
+sync_go_repo_and_patch github.com/ceph/ceph-mixins https://github.com/ceph/ceph-mixins.git master
 
 # Install Kafka Strimzi repository
 sync_go_repo_and_patch github.com/strimzi/strimzi-kafka-operator https://github.com/strimzi/strimzi-kafka-operator.git master

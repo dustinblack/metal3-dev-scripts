@@ -7,41 +7,38 @@
 
 ## Lab
 
+In a separate terminal, setup a watch of the pods we will create.
+```
+watch 'oc get pods --all-namespaces |grep  kubevirt'
+```
+
 First we create the security context constraint and then deploy the kubevirt operator.
 ```
 oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-operator
-oc create -f chimera-kubevirt/kubevirt-operator.yaml
-```
-Check the pods are up and running:
-
-```
-watch oc get pods -n kubevirt
+oc apply -f chimera-kubevirt/kubevirt-operator.yaml
 ```
 
-So now that kubevirt is up and running, we need to get the UI operator deployed as well.
-```
-oc new-project kubevirt-web-ui
-oc project
-cd /root/go/src/github.com/kubevirt/web-ui-operator/deploy
-oc apply -f service_account.yaml
-oc apply -f role.yaml
-oc apply -f role_binding.yaml
-oc apply -f crds/kubevirt_v1alpha1_kwebui_crd.yaml
-oc apply -f operator.yaml
-oc apply -f crds/kubevirt_v1alpha1_kwebui_cr.yaml
-```
-
-Wait for the pod creation to finish, watch it using
+Now in our separate terminal we'll watch the web UI components.
 ```
 watch oc get pods -n kubevirt-web-ui
+```
+
+With kubevirt up and running, we need to get the UI operator deployed as well.
+```
+oc new-project kubevirt-web-ui
+WEBUIPATH=/root/go/src/github.com/kubevirt/web-ui-operator/deploy
+ls $WEBUIPATH
+oc apply -f ${WEBUIPATH}/crds/kubevirt_v1alpha1_kwebui_crd.yaml
+oc apply -f ${WEBUIPATH}/crds/kubevirt_v1alpha1_kwebui_cr.yaml
+oc apply -f $WEBUIPATH
 ```
 
 ## Spin up a fedora VM
 
 To run a fedora VM we need a PVC for it so we can provide ceph-based storage to it:
 ```
-oc create -f chimera-kubevirt/fedora-pvc.yaml
-oc create -f chimera-kubevirt/fedora-vm.yaml
+oc apply -f chimera-kubevirt/fedora-pvc.yaml
+oc apply -f chimera-kubevirt/fedora-vm.yaml
 ```
 Watch the VM being spun up:
 ```
@@ -53,7 +50,7 @@ In order to create a VM from a local image, we need to deploy CDI (containerized
 CDI supports .img, .iso and .qcow2 images.
 
 ```
-oc create -f cdi-controller.yaml
+oc apply -f cdi-controller.yaml
 ```
 
 

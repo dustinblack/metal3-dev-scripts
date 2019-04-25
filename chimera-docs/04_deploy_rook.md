@@ -18,45 +18,44 @@ export KUBECONFIG=/root/metalshift-chimera/ocp/auth/kubeconfig
 oc login -u system:admin
 ```
 
+In a separate terminal, let's setup a watch of the pods we'll create.
+```
+watch 'oc get pods --all-namespaces | grep rook'
+```
+
 We create a security context constraint and then deploy the rook.io operator.
 ```
-oc create -f chimera-rook/scc.yaml 
-oc create -f chimera-rook/operator.yaml 
+oc apply -f chimera-rook/scc.yaml 
+oc apply -f chimera-rook/operator.yaml 
 ```
 
-Before we use the operator, let's ensure that its pods all start normally.
-```
-watch oc get pods -n rook-ceph-system
-```
-
-As that continues to start up, let's take a look at the YAML that will be used to create the Ceph cluster.
+Now let's take a look at the YAML that will be used to create the Ceph cluster.
 ```
 less chimera-rook/cluster.yaml
 ```
 
 With the operator ready, we can deploy the Ceph cluster and the toolbox.
 ```
-oc create -f chimera-rook/cluster.yaml 
-oc create -f chimera-rook/toolbox.yaml 
+oc apply -f chimera-rook/cluster.yaml 
+oc apply -f chimera-rook/toolbox.yaml 
 ```
 
 The operator will respond to the cluster request by inventorying the environment, standing up the three requested Ceph mons and the Ceph manager, and then preparing and standing up the three Ceph OSDs. Our nodes are each configured with NVMe SSDs that will be used as the OSD devices.
 
-Let's monitor the cluster pod deployments.
+Now let's use the toolbox to watch the Ceph status while everything comes up.
 ```
-watch oc get pods -n rook-ceph
+export TOOLBOX=$(oc get pods -l app=rook-ceph-tools -n rook-ceph | grep -v NAME | awk '{print $1}')
+watch 'oc exec -n rook-ceph $TOOLBOX -- ceph -s'
 ```
 
-When the pods are all ready, we can use the toolbox pod as a convenient location for executing Ceph commands.
+It's also interesting to look at the osd tree once everything is up.
 ```
-TOOLBOX=$(oc get pods -l app=rook-ceph-tools -n rook-ceph | grep -v NAME | awk '{print $1}')
-oc exec -n rook-ceph $TOOLBOX -- ceph -s
 oc exec -n rook-ceph $TOOLBOX -- ceph osd tree
 ```
 
 We now create the storage class, which will be used by the rook.io operator to orchestrate the storage provisioning.
 ```
-oc create -f chimera-rook/storageclass.yaml
+oc apply -f chimera-rook/storageclass.yaml
 ```
 
 Looking again at the `ceph -s` output, we can now see that a pool exists with the default 100 placement groups, and we can dig a little deeper into the configuraiton.
@@ -68,7 +67,7 @@ oc exec -n rook-ceph $TOOLBOX -- ceph osd pool get rbd all
 
 We'll test out our new persistent storage by making a simple persistent volume claim.
 ```
-oc create -f chimera-rook/pvctest.yaml
+oc apply -f chimera-rook/pvctest.yaml
 oc get pvc
 oc get pv
 oc describe pv

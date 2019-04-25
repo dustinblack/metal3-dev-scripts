@@ -16,9 +16,10 @@ On your remote host, you may need to edit the `/etc/resolv.conf` file to move th
 
 ## Lab
 
-The console is accessible from the deployment host via: [https://console-openshift-console.apps.ostest.test.metalkube.org](https://console-openshift-console.apps.ostest.test.metalkube.org)
+The console is accessible from the deployment host via:
+[https://console-openshift-console.apps.ostest.test.metalkube.org](https://console-openshift-console.apps.ostest.test.metalkube.org)
 
-The temporary admin username is _kubeadmin_ and the password can be found in the `ocp/auth/kubeadmin-password` file.
+The temporary admin username is **kubeadmin** and the password can be found in the `ocp/auth/kubeadmin-password` file.
 
 ```
 cat ocp/auth/kubeadmin-password

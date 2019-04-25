@@ -12,5 +12,15 @@ echo $VMS
 
 for VM in $VMS
 do
+  virsh suspend $VM
+done 
+
+for VM in $VMS
+do
   virsh snapshot-create-as --domain $VM --name $VM-$SUFFIX
 done
+
+for VM in $VMS
+do
+  virsh resume $VM
+done 

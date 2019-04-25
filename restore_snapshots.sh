@@ -13,5 +13,16 @@ echo $VMS
 
 for VM in $VMS
 do
-  virsh snapshot-revert $VM --snapshotname $VM-$SUFFIX
+  virsh suspend $VM
+done
+
+for VM in $VMS
+do
+  virsh snapshot-revert $VM --snapshotname $VM-$SUFFIX --paused
+  echo "Domain $VM set to snapshot $SUFFIX"
+done
+
+for VM in $VMS
+do
+  virsh resume $VM
 done

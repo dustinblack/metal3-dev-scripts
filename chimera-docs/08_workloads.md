@@ -42,7 +42,7 @@ After the pod starts, navigate to its _Terminal_ tab.
 
 Show that this is RHEL:
 ```
-cat /etc/redhat/release
+cat /etc/redhat-release
 ```
 
 Confirm our SQL Server password:

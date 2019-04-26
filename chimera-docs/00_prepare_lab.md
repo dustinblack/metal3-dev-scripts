@@ -22,7 +22,8 @@ subscription-manager repos --enable=rhel-7-server-rpms --enable=rhel-7-server-ex
 yum -y install git
 ```
 
-**RHEL/CentOS VT-d:**
+**Optional -- RHEL/CentOS VT-d:**
+You'll need this if you want to do any PCI device passthrough.
 First make sure this is enabled in your BIOS, then edit `/etc/default/grub` to add `intel_iommu=on` to the `GRUB_CMDLINE_LINUX` var. Then rebuild your grub config and reboot:
 ```
 sed -i s/quiet/quiet\ intel_iommu\=on/ /etc/default/grub

@@ -40,13 +40,13 @@ oc apply -f chimera-rook/cluster.yaml
 oc apply -f chimera-rook/toolbox.yaml 
 ```
 
-The operator will respond to the cluster request by inventorying the environment, standing up the three requested Ceph mons and the Ceph manager, and then preparing and standing up the three Ceph OSDs. Our nodes are each configured with NVMe SSDs that will be used as the OSD devices.
-
-Now let's use the toolbox to watch the Ceph status while everything comes up.
+While everything is coming up, let's use the toolbox to watch the Ceph status.
 ```
 export TOOLBOX=$(oc get pods -l app=rook-ceph-tools -n rook-ceph | grep -v NAME | awk '{print $1}')
 watch 'oc exec -n rook-ceph $TOOLBOX -- ceph -s'
 ```
+
+The operator will respond to the cluster request by inventorying the environment, standing up the three requested Ceph mons and the Ceph manager, and then preparing and standing up the three Ceph OSDs. Our nodes are each configured with NVMe SSDs that will be used as the OSD devices.
 
 It's also interesting to look at the osd tree once everything is up.
 ```

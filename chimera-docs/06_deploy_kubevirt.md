@@ -46,18 +46,11 @@ Watch the VM being spun up:
 ```
 watch oc get vmis
 ```
-
-
 In order to create a VM from a local image, we need to deploy CDI (containerized data importer) so that we can use PVCs as disks for VMs.
 CDI supports .img, .iso and .qcow2 images.
 
 ```
-oc apply -f cdi-controller.yaml
+oc apply -f chimera-cdi/cdi-controller.yaml
+oc apply -f chimera-cdi/cdi-operator-cr.yaml
 ```
 
-
-
-TODO: Add the kubevirt git cloning to the prep section
-      git clone https://github.com/kubevirt/web-ui-operator.git
-      Add the virtctl download as well (make sure the version matches kubevirt!)
-      wget https://github.com/kubevirt/kubevirt/releases/download/v0.15.0/virtctl-v0.15.0-linux-amd64

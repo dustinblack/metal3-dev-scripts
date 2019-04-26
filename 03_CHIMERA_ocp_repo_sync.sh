@@ -91,3 +91,8 @@ sync_go_repo_and_patch github.com/kubevirt/web-ui-operator https://github.com/ku
 # Get the virtctl binary downloaded to /usr/local/bin
 wget https://github.com/kubevirt/kubevirt/releases/download/v0.15.0/virtctl-v0.15.0-linux-amd64 -O /usr/local/bin/virtctl 
 chmod 755 /usr/local/bin/virtctl
+
+# Get the CDI yaml files
+export VERSION=$(curl -s https://github.com/kubevirt/containerized-data-importer/releases/latest | grep -o "v[0-9]\.[0-9]*\.[0-9]*")
+wget https://github.com/kubevirt/containerized-data-importer/releases/download/$VERSION/cdi-operator.yaml -O ~/metalshift-chimera/chimera-cdi/cdi-operator.yaml
+wget https://github.com/kubevirt/containerized-data-importer/releases/download/$VERSION/cdi-operator-cr.yaml -O ~/metalshift-chimera/chimera-cdi/cdi-operator-cr.yaml

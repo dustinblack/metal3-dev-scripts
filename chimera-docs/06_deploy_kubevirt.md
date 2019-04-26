@@ -16,6 +16,7 @@ First we create the security context constraint and then deploy the kubevirt ope
 ```
 oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-operator
 oc apply -f chimera-kubevirt/kubevirt-operator.yaml
+oc apply -f chimera-kubevirt/kubevirt-cr.yaml
 ```
 
 Now in our separate terminal we'll watch the web UI components.
@@ -32,6 +33,7 @@ oc apply -f ${WEBUIPATH}/crds/kubevirt_v1alpha1_kwebui_crd.yaml
 oc apply -f ${WEBUIPATH}/crds/kubevirt_v1alpha1_kwebui_cr.yaml
 oc apply -f $WEBUIPATH
 ```
+Once the pods are all up, check the webfrontend running on port 9000
 
 ## Spin up a fedora VM
 
@@ -54,7 +56,6 @@ oc apply -f cdi-controller.yaml
 ```
 
 
-Once they are all up, check the webfrontend running on port 9000
 
 TODO: Add the kubevirt git cloning to the prep section
       git clone https://github.com/kubevirt/web-ui-operator.git

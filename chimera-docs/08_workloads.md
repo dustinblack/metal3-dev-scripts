@@ -75,7 +75,7 @@ GO
 
 Back on our deployment host system, let's take a look at our Ceph storage consumption
 ```
-TOOLBOX=$(oc get pods -l app=rook-ceph-tools -n rook-ceph | grep -v NAME | awk '{print $1}')
-oc exec -n rook-ceph $TOOLBOX -- ceph -s
-oc exec -n rook-ceph $TOOLBOX -- ceph df
-```
+TOOLBOX=$(oc get pods -l app=rook-ceph-tools -n openshift-storage | grep -v NAME | awk '{print $1}')
+oc exec -n openshift-storage $TOOLBOX -- ceph -s
+oc exec -n openshift-storage $TOOLBOX -- ceph df
+``` 

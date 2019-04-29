@@ -27,4 +27,4 @@ curl -X PATCH \
      -H "Content-type: application/merge-patch+json" \
      -d '{"status":{"addresses":'"${addresses}"',"nodeRef":{"kind":"Node","name":"'"${node_name}"'","uid":"'"${uid}"'"}}}'
 
-kill $proxy_pid
+#kill $proxy_pid

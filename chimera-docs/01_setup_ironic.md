@@ -23,11 +23,11 @@ PODRUNCMD="podman run -d --net host --privileged -v ${IRONIC_DATA_DIR}:/shared -
 Finally, we create our local pod and the Ironic and dependency containers.
 ```
 podman pod create -n ironic-pod
-$PODRUNCMD --name dnsmasq --entrypoint /bin/rundnsmasq quay.io/dustinblack/metalkube-ironic
-$PODRUNCMD --name httpd --entrypoint /bin/runhttpd quay.io/dustinblack/metalkube-ironic
-$PODRUNCMD --name mariadb --entrypoint /bin/runmariadb --env MARIADB_PASSWORD=redhat quay.io/dustinblack/metalkube-ironic
-$PODRUNCMD --name ironic --env MARIADB_PASSWORD=redhat quay.io/dustinblack/metalkube-ironic
-$PODRUNCMD --name ironic-inspector quay.io/dustinblack/metalkube-ironic-inspector
+$PODRUNCMD --name dnsmasq --entrypoint /bin/rundnsmasq quay.io/dustinblack/metalkube-ironic:lockdown2
+$PODRUNCMD --name httpd --entrypoint /bin/runhttpd quay.io/dustinblack/metalkube-ironic:lockdown2
+$PODRUNCMD --name mariadb --entrypoint /bin/runmariadb --env MARIADB_PASSWORD=redhat quay.io/dustinblack/metalkube-ironic:lockdown2
+$PODRUNCMD --name ironic --env MARIADB_PASSWORD=redhat quay.io/dustinblack/metalkube-ironic:lockdown2
+$PODRUNCMD --name ironic-inspector quay.io/dustinblack/metalkube-ironic-inspector:lockdown2
 ```
 
 Take a look at your running containers.

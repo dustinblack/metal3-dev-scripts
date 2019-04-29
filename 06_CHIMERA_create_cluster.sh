@@ -5,7 +5,6 @@ set -e
 source logging.sh
 source utils.sh
 source common.sh
-#source common_chimera.sh
 #source ocp_install_env.sh
 source ocp_CHIMERA_install_env.sh
 

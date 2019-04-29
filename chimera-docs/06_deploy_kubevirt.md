@@ -37,15 +37,17 @@ oc project default
 oc apply -f chimera-kubevirt/fedora-pvc.yaml
 oc apply -f chimera-kubevirt/fedora-vm.yaml
 ```
+
 Watch the VM being spun up:
 ```
 watch oc get vmis
 ```
+
 In order to create a VM from a local image, we need to deploy CDI (containerized data importer) so that we can use PVCs as disks for VMs.
 CDI supports .img, .iso and .qcow2 images.
-
 ```
-oc apply -f chimera-cdi/cdi-controller.yaml
-oc apply -f chimera-cdi/cdi-operator-cr.yaml
+CDIPATH=/root/demo/chimera-cdi
+oc apply -f ${CDIPATH}/cdi-operator.yaml
+oc apply -f ${CDIPATH}/cdi-operator-cr.yaml
 ```
 

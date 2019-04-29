@@ -72,6 +72,12 @@ If you've already run this on the system before then the yum and libvirt stuff c
 make chimera_lab_ready
 ```
 
+## Setup virtual storage domains
+For the Chimera host, we have each NVMe mounted and with a qcow2 file in it to virtualize the storage for the VMs in a way that is snapshottable. The libvirt subsystem needs to be informed about these.
+```
+for i in {1..4}; do virsh pool-create-as nvme${i}n1 dir --target /nvme${i}n1; done
+```
+
 ## Remote network access
 
 The simplest way to access the OCP network is to add physical interfaces to the _baremetal_ bridge. An external host connected to the bridged interface will then get DHCP assignments from the already-running dnsmasq for that network.
@@ -84,3 +90,6 @@ brctl addif baremetal enp12s0
 ```
 
 You may need to adjust `/etc/resolv.conf` on the connected host to move the 192.168.111.1 DNS server to the top of the list, or otherwise adjust your configuration so that name resolution on the OCP network functions.
+
+## Add the Red Hat container registry pull secret
+Part of the lab expects to pull images from the Red Hat container registry. This expects authentication via a secret names _rhsecret_. This will need to be created on the host system after OCP is deployed.

@@ -1,6 +1,6 @@
 # Install OpenShift 4
 
-<img src="https://avatars0.githubusercontent.com/u/44301270?s=280&v=4" alt="Metal3 Logo" height="200px">
+<img src="https://cdn.worldvectorlogo.com/logos/openshift.svg" alt="OpenShift Logo" height="200px"><img src="https://avatars0.githubusercontent.com/u/44301270?s=280&v=4" alt="Metal3 Logo" height="200px">
 
 ## Intro
 

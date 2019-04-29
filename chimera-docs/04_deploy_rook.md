@@ -7,6 +7,11 @@
 
 ## Lab
 
+We need to first run a cleanup script to ensure that any previous Ceph deployments in our lab don't cause problems.
+```
+chimera-rook/cleanup.sh
+```
+
 Login to the cluster
 ```
 export KUBECONFIG=/root/metalshift-chimera/ocp/auth/kubeconfig
@@ -15,7 +20,7 @@ oc login -u system:admin
 
 In a separate terminal, let's setup a watch of the pods we'll create.
 ```
-watch 'oc get pods --all-namespaces | grep rook'
+watch 'oc get pods -n openshift-storage'
 ```
 
 Run the deploy script 10_deploy_rook.sh:

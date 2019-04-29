@@ -88,6 +88,17 @@ sync_go_repo_and_patch github.com/scholzj/kafka-test-apps https://github.com/sch
 # Install web ui operator repository
 sync_go_repo_and_patch github.com/kubevirt/web-ui-operator https://github.com/kubevirt/web-ui-operator master
 
+
+##FOR CHIMERA
+
+# Copy the kubevirt tree and modify
+DEMOPATH=/root/demo
+mkdir -p $DEMOPATH
+cp -a ${GOPATH}/src/github.com/kubevirt $DEMOPATH
+UIVERSION="${UIVERSION:-v2.0.0-13.1}"
+sed -i "s/okdvirt/openshiftvirt/" ${DEMOPATH}/kubevirt/web-ui-operator/deploy/crds/kubevirt_v1alpha1_kwebui_cr.yaml
+sed -i "s/version: .*/version: \"$UIVERSION\"/" ${DEMOPATH}/kubevirt/web-ui-operator/deploy/crds/kubevirt_v1alpha1_kwebui_cr.yaml
+
 # Get the virtctl binary downloaded to /usr/local/bin
 wget https://github.com/kubevirt/kubevirt/releases/download/v0.15.0/virtctl-v0.15.0-linux-amd64 -O /usr/local/bin/virtctl 
 chmod 755 /usr/local/bin/virtctl

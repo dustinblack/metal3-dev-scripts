@@ -27,7 +27,7 @@ watch oc get pods -n kubevirt-web-ui
 With kubevirt up and running, we need to get the UI operator deployed as well.
 ```
 oc new-project kubevirt-web-ui
-WEBUIPATH=/root/go/src/github.com/kubevirt/web-ui-operator/deploy
+WEBUIPATH=/root/demo/kubevirt/web-ui-operator/deploy
 ls $WEBUIPATH
 oc apply -f ${WEBUIPATH}/crds/kubevirt_v1alpha1_kwebui_crd.yaml
 oc apply -f ${WEBUIPATH}/crds/kubevirt_v1alpha1_kwebui_cr.yaml

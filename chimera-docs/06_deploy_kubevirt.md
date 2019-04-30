@@ -52,3 +52,13 @@ oc apply -f ${CDIPATH}/cdi-operator.yaml
 oc apply -f ${CDIPATH}/cdi-operator-cr.yaml
 ```
 
+Create a DataVolume for our Windows VM and import the qcow2 disk image.
+```
+oc apply -f chimera-cdi/win2012-dv.yaml
+```
+
+See the PVC and PV for our new data volume.
+```
+oc get pvc
+oc get pv
+```

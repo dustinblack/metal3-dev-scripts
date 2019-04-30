@@ -15,8 +15,8 @@ watch 'oc get pods --all-namespaces |grep  kubevirt'
 First we create the security context constraint and then deploy the kubevirt operator.
 ```
 oc adm policy add-scc-to-user privileged -n kubevirt -z kubevirt-operator
-oc apply -f chimera-kubevirt/dv-configmap.yaml
 oc apply -f chimera-kubevirt/kubevirt-operator.yaml
+oc apply -f chimera-kubevirt/dv-configmap.yaml
 oc apply -f chimera-kubevirt/kubevirt-cr.yaml
 ```
 

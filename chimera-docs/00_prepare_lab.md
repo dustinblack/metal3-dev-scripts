@@ -95,4 +95,4 @@ You may need to adjust `/etc/resolv.conf` on the connected host to move the 192.
 Part of the lab expects to pull images from the Red Hat container registry. This expects authentication via a secret names _rhsecret_. This will need to be created on the host system after OCP is deployed.
 
 ## VM images
-The nginx server will be installed and customzed to server `/home/html` on port 88 with the above. Any VM images that will be loaded into the CDI DataVolumes will need to be placed here.
+The nginx server will be installed and customzed to server `/opt/dev-scripts/html` on port 88 with the above. Any VM images that will be loaded into the CDI DataVolumes will need to be placed here.

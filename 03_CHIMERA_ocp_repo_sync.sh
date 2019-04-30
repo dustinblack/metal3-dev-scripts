@@ -104,6 +104,7 @@ wget https://github.com/kubevirt/kubevirt/releases/download/v0.15.0/virtctl-v0.1
 chmod 755 /usr/local/bin/virtctl
 
 # Get the CDI yaml files
-export VERSION=$(curl -s https://github.com/kubevirt/containerized-data-importer/releases/latest | grep -o "v[0-9]\.[0-9]*\.[0-9]*")
+#export VERSION=$(curl -s https://github.com/kubevirt/containerized-data-importer/releases/latest | grep -o "v[0-9]\.[0-9]*\.[0-9]*")
+export VERSION=v1.8.0	# known good version as of April 30
 wget https://github.com/kubevirt/containerized-data-importer/releases/download/$VERSION/cdi-operator.yaml -O ~/metalshift-chimera/chimera-cdi/cdi-operator.yaml
 wget https://github.com/kubevirt/containerized-data-importer/releases/download/$VERSION/cdi-operator-cr.yaml -O ~/metalshift-chimera/chimera-cdi/cdi-operator-cr.yaml

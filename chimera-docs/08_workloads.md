@@ -31,6 +31,8 @@ spec:
         value: 'Y'
       - name: MSSQL_SA_PASSWORD
         value: Wicked$trongPassw0rd
+      ports:
+      - containerPort: 1433
       volumeMounts:
         - mountPath: /var/opt/mssql/
           name: mssqlps

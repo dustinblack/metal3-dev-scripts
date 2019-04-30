@@ -1,9 +1,9 @@
 apiVersion: cdi.kubevirt.io/v1alpha1
 kind: DataVolume
 metadata:
-  name: import-kubevirt-block-datavolume
+  name: test
 spec:
-  storageClassName: rook-ceph-block
+  # Optional: Set the storage class or omit to accept the default
   source:
     http:
       url: "https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img"
@@ -13,3 +13,4 @@ spec:
     resources:
       requests:
         storage: 1Gi
+    storageClassName: rook-ceph-block 

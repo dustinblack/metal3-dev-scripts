@@ -46,6 +46,5 @@ CDI supports .img, .iso and .qcow2 images.
 
 ```
 oc apply -f chimera-cdi/cdi-controller.yaml
-oc apply -f chimera-cdi/cdi-operator-cr.yaml
 ```
 

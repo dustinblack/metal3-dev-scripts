@@ -1,0 +1,15 @@
+apiVersion: cdi.kubevirt.io/v1alpha1
+kind: DataVolume
+metadata:
+  name: windows-2012-datavolume
+spec:
+  source:
+    http:
+      url:  "http://192.168.111.1:88/win2012.qcow2"
+  pvc:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 65Gi
+

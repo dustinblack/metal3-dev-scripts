@@ -1,4 +1,5 @@
 # Chimera Lab
+<img src="images/chimera-logo.png" alt="Chimera Logo" width="200px">
 
 * [Prepare Lab](00_prepare_lab.md)
 * [LAB1: Setup Ironic](01_setup_ironic.md)

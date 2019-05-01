@@ -1,5 +1,7 @@
 # Prepare Chimera Lab
 
+<img src="images/chimera-logo.png" alt="Chimera Logo" width="200px">
+
 ## Operating Environment
 
 * Have $loads of CPU and memory

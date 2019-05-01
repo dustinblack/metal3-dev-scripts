@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -ex
+
+source logging.sh
 
 tuned-adm profile virtual-host
 yum -y groupinstall 'Virtualization Host'
@@ -8,10 +11,11 @@ yum -y install git vim-enhanced
 yum -y install nginx
 WEBHOME=/opt/dev-scripts/html
 mkdir -p $WEBHOME
-echo 'demo' > ${WEBHOME}index.html
-sed -i s/80\ default_server/88\ default_server/g /etc/nginx/nginx.conf
-sed -i s/\/usr\/share\/nginx\/html/\/opt\/dev-scripts\/html/g /etc/nginx/nginx.conf
+chmod 755 $WEBHOME
+echo 'demo' > ${WEBHOME}/index.html
+sed -i 's/80\ default_server/88\ default_server/g' /etc/nginx/nginx.conf
+sed -i 's/\/usr\/share\/nginx\/html/\/opt\/dev-scripts\/html/g' /etc/nginx/nginx.conf
 systemctl enable nginx
-systemctl start nginx
+systemctl restart nginx
 firewall-cmd --add-port 88/tcp
 firewall-cmd --add-port 88/tcp --permanent

@@ -34,8 +34,6 @@ spec:
       ports:
       - containerPort: 1433
         name: sql
-      - containerPort: 3389
-        name: rdp
       volumeMounts:
         - mountPath: /var/opt/mssql/
           name: mssqlps

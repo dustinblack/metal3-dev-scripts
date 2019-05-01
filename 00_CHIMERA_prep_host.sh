@@ -12,3 +12,5 @@ sed -i s/80\ default_server/88\ default_server/g /etc/nginx/nginx.conf
 sed -i s/\/usr\/share\/nginx\/html/\/opt\/dev-scripts\/html/g /etc/nginx/nginx.conf
 systemctl enable nginx
 systemctl start nginx
+firewall-cmd --add-port 88/tcp
+firewall-cmd --add-port 88/tcp --permanent

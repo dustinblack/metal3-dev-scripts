@@ -1,6 +1,6 @@
-# Deploy Ceph via Rook.io
+# Lab 3: Deploy Ceph via Rook.io
 
-<img src="https://landscape.cncf.io/logos/rook.svg" alt="Rook Logo" height="200px"><img src="https://ceph.com/wp-content/uploads/2016/07/Ceph_Logo_Stacked_RGB_120411_fa.png" alt="Ceph Logo" width="200px">
+<img src="images/rook_logo.png" alt="Rook Logo" height="200px"><img src="images/ceph_logo.png" alt="Ceph Logo" height="200px">
 
 ## Intro
 [Rook.io](https://rook.io/) is a Kubernetes [operator](https://coreos.com/operators/) that orchestrates software-defined storage deployment and management for container persistent storage. We use rook.io initially to deploy [Ceph](https://ceph.com/) as a set of containerized services. Then we define a storage class, which the operator will "listen" to in order to automate the provisioning of Ceph volumes to fulfill persistent volume claims.

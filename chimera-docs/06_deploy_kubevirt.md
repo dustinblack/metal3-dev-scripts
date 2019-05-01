@@ -1,6 +1,6 @@
-# Deploy kubevirt 
+# Lab 4: Deploy kubevirt 
 
-<img src="https://kubevirt.io/user-guide/docs/latest/_images/KubeVirt_icon.png" alt="Kubevirt Logo" height="200px">
+<img src="images/kubevirt_logo.png" alt="Kubevirt Logo" height="200px">
 
 ## Intro
 
@@ -26,8 +26,8 @@ oc new-project kubevirt-web-ui
 WEBUIPATH=/root/demo/kubevirt/web-ui-operator/deploy
 ls $WEBUIPATH
 oc apply -f ${WEBUIPATH}/crds/kubevirt_v1alpha1_kwebui_crd.yaml
-oc apply -f ${WEBUIPATH}/crds/kubevirt_v1alpha1_kwebui_cr.yaml
 oc apply -f $WEBUIPATH
+oc apply -f ${WEBUIPATH}/crds/kubevirt_v1alpha1_kwebui_cr.yaml
 ```
 
 ## Spin up a fedora VM

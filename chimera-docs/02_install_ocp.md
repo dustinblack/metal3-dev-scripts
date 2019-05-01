@@ -1,6 +1,6 @@
-# Install OpenShift 4
+# Demo 1: Install OpenShift 4
 
-<img src="https://cdn.worldvectorlogo.com/logos/openshift.svg" alt="OpenShift Logo" height="200px"><img src="https://avatars0.githubusercontent.com/u/44301270?s=280&v=4" alt="Metal3 Logo" height="200px">
+<img src="images/openshift_logo.png" alt="OpenShift Logo" height="200px"><img src="images/metal3_logo.png" alt="Metal3 Logo" height="200px">
 
 ## Intro
 
@@ -18,3 +18,6 @@ The OCP deployment process is heavily automated to leverage the underlying host,
 ```
 ./06_CHIMERA_create_cluster.sh
 ```
+
+## Demo Recording
+TODO

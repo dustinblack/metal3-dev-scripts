@@ -1,6 +1,6 @@
-# Setup Ironic
+# Lab 1: Setup Ironic
 
-<img src="https://avatars1.githubusercontent.com/u/35034937?s=400&v=4" alt="Ironic Logo" width="200px"><img src="https://media.mastodon.at/system/media_attachments/files/001/553/566/original/f0ee34263aa771be.png" alt="Podman Logo" width="200px">
+<img src="images/ironic_logo.png" alt="Ironic Logo" width="200px"><img src="images/podman_logo.png" alt="Podman Logo" width="200px">
 
 ## Intro
 

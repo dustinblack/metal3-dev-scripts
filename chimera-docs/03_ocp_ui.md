@@ -1,6 +1,10 @@
-# Explore the OpenShift Web Console UI
+# Lab 2: Explore the OpenShift Web Console UI
+
+<img src="images/openshift_logo.png" alt="OpenShift Logo" height="200px">
 
 ## Intro
+
+The OpenShift Container Platform web UI provide convenient access for administering and monitoring your cluster.
 
 ## Connecting a remote host
 
@@ -24,3 +28,18 @@ The temporary admin username is **kubeadmin** and the password can be found in t
 ```
 cat ocp/auth/kubeadmin-password
 ```
+
+<img src="images/ocp_web_ui-login.png" alt="OpenShift Web UI Login">
+<img src="images/ocp_web_ui-projects.png" alt="OpenShift Web UI Projects">
+<img src="images/ocp_web_ui-status.png" alt="OpenShift Web UI Status">
+<img src="images/ocp_web_ui-catalog.png" alt="OpenShift Web UI Catalog">
+<img src="images/ocp_web_ui-operatorhub.png" alt="OpenShift Web UI OperatorHub">
+<img src="images/ocp_web_ui-pods.png" alt="OpenShift Web UI Pods">
+<img src="images/ocp_web_ui-routes.png" alt="OpenShift Web UI Routes">
+<img src="images/ocp_web_ui-prom_login.png" alt="OpenShift Web UI Prometheus Login">
+<img src="images/ocp_web_ui-prom.png" alt="OpenShift Web UI Prometheus">
+<img src="images/ocp_web_ui-grafana_login.png" alt="OpenShift Web UI Grafana Login">
+<img src="images/ocp_web_ui-grafana1.png" alt="OpenShift Web UI Grafana 1">
+<img src="images/ocp_web_ui-grafana2.png" alt="OpenShift Web UI Grafana 2">
+<img src="images/ocp_web_ui-grafana3.png" alt="OpenShift Web UI Grafana 3">
+<img src="images/ocp_web_ui-grafana4.png" alt="OpenShift Web UI Grafana 4">

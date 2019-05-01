@@ -54,10 +54,6 @@ cp config_example.sh config_root.sh
 
 Add your pull secret as noted in the script.
 
-## Passthrough NVMe for Chimera
-
-We have some script hacks in place for the Chimera system specifically, which accounts for specific NVMe drives being available in specific PCIe slots. For this node to pass through the NVMe devices properly to the VMs, edit the `metalshift-chimera/tripleo-quickstart-config/metalkube-nodes.yml` to set `flavors.openshift_node.nvme_passthrough` to `true`.
-
 ## Storage for images
 
 You can mount storage to `/opt/dev-scripts` if you need separate space for virtual machine and container images.
@@ -80,6 +76,16 @@ For the Chimera host, we have each NVMe mounted and with a qcow2 file in it to v
 for i in {1..4}; do virsh pool-create-as nvme${i}n1 dir --target /nvme${i}n1; done
 ```
 
+## Passthrough NVMe for Chimera
+
+We have some script hacks in place for the Chimera system specifically, which accounts for specific NVMe drives being available in specific PCIe slots. For this node to pass through the NVMe devices properly to the VMs, edit the `metalshift-chimera/tripleo-quickstart-config/metalkube-nodes.yml` to set `flavors.openshift_node.nvme_passthrough` to `true`.
+
+## Storage qcow2 disks for Chimera
+
+Another hack to use the qcow2 disk images from above...
+
+The passthrough NVMe above does not allow for VM snapshots. So for the Chimera demo lab where snapshots are required, the NVMe devices have been formatted and mounted with pre-defined qcow2 images (/nvme{1..4}n1/nvme{1..4}n1.qcow2). To use these disk images, edit the `metalshift-chimera/tripleo-quickstart-config/metalkube-nodes.yml` to set `flavors.openshift_node.attach_qcow2` to `true`. Then above for each of the `overcloud_node` entries, add the base nvme name, i.e. `nvme1n1`, to associate with each VM.
+
 ## Remote network access
 
 The simplest way to access the OCP network is to add physical interfaces to the _baremetal_ bridge. An external host connected to the bridged interface will then get DHCP assignments from the already-running dnsmasq for that network.
@@ -97,4 +103,4 @@ You may need to adjust `/etc/resolv.conf` on the connected host to move the 192.
 Part of the lab expects to pull images from the Red Hat container registry. This expects authentication via a secret names _rhsecret_. This will need to be created on the host system after OCP is deployed.
 
 ## VM images
-The nginx server will be installed and customzed to server `/opt/dev-scripts/html` on port 88 with the above. Any VM images that will be loaded into the CDI DataVolumes will need to be placed here.
+The nginx server will be installed and customzed to serve from `/opt/dev-scripts/html` on port 88 via the `00_CHIMERA_prep_host.sh` script. Any VM images that will be loaded into the CDI DataVolumes will need to be placed here.

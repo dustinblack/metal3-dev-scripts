@@ -58,6 +58,16 @@ Add your pull secret as noted in the script.
 
 You can mount storage to `/opt/dev-scripts` if you need separate space for virtual machine and container images.
 
+## Passthrough NVMe for Chimera
+
+We have some script hacks in place for the Chimera system specifically, which accounts for specific NVMe drives being available in specific PCIe slots. For this node to pass through the NVMe devices properly to the VMs, edit the `metalshift-chimera/tripleo-quickstart-config/metalkube-nodes.yml` to set `flavors.openshift_node.nvme_passthrough` to `true`.
+
+## Storage qcow2 disks for Chimera
+
+Another hack to use qcow2 disk images...
+
+The passthrough NVMe above does not allow for VM snapshots. So for the Chimera demo lab where snapshots are required, the NVMe devices have been formatted and mounted with pre-defined qcow2 images (/nvme{1..4}n1/nvme{1..4}n1.qcow2). To use these disk images, edit the `metalshift-chimera/tripleo-quickstart-config/metalkube-nodes.yml` to set `flavors.openshift_node.attach_qcow2` to `true`. Then above for each of the `overcloud_node` entries, add the base nvme name, i.e. `nvme1n1`, to associate with each VM.
+
 ## Run setup scripts
 
 ```
@@ -71,20 +81,11 @@ make chimera_lab_ready
 ```
 
 ## Setup virtual storage domains
-For the Chimera host, we have each NVMe mounted and with a qcow2 file in it to virtualize the storage for the VMs in a way that is snapshottable. The libvirt subsystem needs to be informed about these.
+For the Chimera host when using the qcow2 storage disk images, we have each NVMe mounted and with a qcow2 file in it to virtualize the storage for the VMs in a way that is snapshottable. The libvirt subsystem needs to be informed about these.
 ```
 for i in {1..4}; do virsh pool-create-as nvme${i}n1 dir --target /nvme${i}n1; done
+systemctl restart libvirtd
 ```
-
-## Passthrough NVMe for Chimera
-
-We have some script hacks in place for the Chimera system specifically, which accounts for specific NVMe drives being available in specific PCIe slots. For this node to pass through the NVMe devices properly to the VMs, edit the `metalshift-chimera/tripleo-quickstart-config/metalkube-nodes.yml` to set `flavors.openshift_node.nvme_passthrough` to `true`.
-
-## Storage qcow2 disks for Chimera
-
-Another hack to use the qcow2 disk images from above...
-
-The passthrough NVMe above does not allow for VM snapshots. So for the Chimera demo lab where snapshots are required, the NVMe devices have been formatted and mounted with pre-defined qcow2 images (/nvme{1..4}n1/nvme{1..4}n1.qcow2). To use these disk images, edit the `metalshift-chimera/tripleo-quickstart-config/metalkube-nodes.yml` to set `flavors.openshift_node.attach_qcow2` to `true`. Then above for each of the `overcloud_node` entries, add the base nvme name, i.e. `nvme1n1`, to associate with each VM.
 
 ## Remote network access
 

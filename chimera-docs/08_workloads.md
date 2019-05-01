@@ -1,6 +1,6 @@
 # Lab 5: VM and Container Workloads
 
-<img src="https://upload.wikimedia.org/wikipedia/sco/thumb/6/6c/RedHat.svg/1280px-RedHat.svg.png" alt="Red Hat Logo" height="200px"><img src="http://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE2qVsJ?ver=3f74" alt="Microsoft Logo" height="200px">
+<img src="images/Logo-RedHat-A-Color-RGB.png" alt="Red Hat Logo" height="100px"><img src="images/microsoft_logo.png" alt="Microsoft Logo" height="100px">
 
 ## Create Persistent Volume Claim
 

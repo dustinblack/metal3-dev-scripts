@@ -81,3 +81,11 @@ TOOLBOX=$(oc get pods -l app=rook-ceph-tools -n openshift-storage | grep -v NAME
 oc exec -n openshift-storage $TOOLBOX -- ceph -s
 oc exec -n openshift-storage $TOOLBOX -- ceph df
 ``` 
+
+In the Kubevirt web UI, navigate to _Workloads > Virtual Machines_, click on _Create Virtual Machine_ and then _Create with Wizard_. Name the new VM _win2012_, select _Cloned Disk_ for the _Provision Source_, select _Microsoft Windows Server 2012 R2_ for the _Operating System_, select _medium_ for the _Flavor_, and select _generic_ for the _Workload Profile_, then click the _Next_ button.
+
+A _nic0_ should already be populated for the networking, so click the _Next_ button on this screen. On the _Storage_ screen, click the _Attach Disk_ button and select the _windows-2012-datavolume_ from the drop-down list. Click the blue check box, then click the _Create Virtual Machine_ button.
+
+Back in the _Virtual Machines_ view, click the menu button to the right of the _win2012_ virtual machine, and then click _Start Virtual Machine_.
+
+When the _win2012_ virtual machine completes initializing and starting up, click on its _Consoles_ tab and login to Windows with the _Administrator_ username and _RedHat1!_ password. Open the _HammerDB_ link on the desktop.

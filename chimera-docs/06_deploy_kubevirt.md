@@ -42,20 +42,6 @@ Once the operator is up, we'll apply the custom resource.
 oc apply -f ${WEBUIPATH}/crds/kubevirt_v1alpha1_kwebui_cr.yaml
 ```
 
-## Spin up a fedora VM
-
-To run a fedora VM we need a PVC for it so we can provide ceph-based storage to it:
-```
-oc project default
-oc apply -f chimera-kubevirt/fedora-pvc.yaml
-oc apply -f chimera-kubevirt/fedora-vm.yaml
-```
-
-Watch the VM being spun up:
-```
-watch oc get vms
-```
-
 In order to create a VM from a local image, we need to deploy CDI (containerized data importer) so that we can use PVCs as disks for VMs.
 CDI supports .img, .iso and .qcow2 images.
 
@@ -75,6 +61,20 @@ And then once it is running we use the operator.
 oc apply -f ${CDIPATH}/cdi-operator-cr.yaml
 ```
 
+## Spin up a fedora VM
+
+To run a fedora VM we need a PVC for it so we can provide ceph-based storage to it:
+```
+oc project default
+oc apply -f chimera-kubevirt/fedora-pvc.yaml
+oc apply -f chimera-kubevirt/fedora-vm.yaml
+```
+
+Watch the VM being spun up:
+```
+watch oc get vms
+```
+
 For our next lab, we will need a CDI data volume in place for our virtual machine instance.
 
 Create the DataVolume for our Windows VM and import the qcow2 disk image.
@@ -86,6 +86,11 @@ This will start a new pod to import the source into a PV. Take a look.
 ```
 oc get pods
 oc describe pod -l app=containerized-data-importer
+```
+
+You can watch the image loading via the importer pod logs.
+```
+oc logs -f importer-windows-2012-datavolume-<id>
 ```
 
 This will also create a new PVC and bound PV to hold the VM disk image.

@@ -79,7 +79,7 @@ For our next lab, we will need a CDI data volume in place for our virtual machin
 
 Create the DataVolume for our Windows VM and import the qcow2 disk image.
 ```
-oc apply -f chimera-cdi/win2012-dv.yaml
+oc apply -f ${CDIPATH}/win2012-dv.yaml
 ```
 
 This will start a new pod to import the source into a PV. Take a look.

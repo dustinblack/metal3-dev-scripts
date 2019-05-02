@@ -67,12 +67,20 @@ To run a fedora VM we need a PVC for it so we can provide ceph-based storage to 
 ```
 oc project default
 oc apply -f chimera-kubevirt/fedora-pvc.yaml
+oc get pvc
 oc apply -f chimera-kubevirt/fedora-vm.yaml
 ```
 
-Watch the VM being spun up:
+Creating a VM will start a pod in which it will be hosted. That pod will pull down the VM image as defined in the YAML.
 ```
-watch oc get vms
+oc get pods
+oc describe pod
+```
+
+Other things to look at:
+```
+oc get vm
+oc get vmi
 ```
 
 For our next lab, we will need a CDI data volume in place for our virtual machine instance.

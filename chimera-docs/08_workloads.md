@@ -83,9 +83,20 @@ oc exec -n rook-ceph $TOOLBOX -- ceph -s
 oc exec -n rook-ceph $TOOLBOX -- ceph df
 ``` 
 
-In the Kubevirt web UI, navigate to _Workloads > Virtual Machines_, click on _Create Virtual Machine_ and then _Create with Wizard_. Name the new VM _win2012_, select _Cloned Disk_ for the _Provision Source_, select _Microsoft Windows Server 2012 R2_ for the _Operating System_, select _medium_ for the _Flavor_, and select _generic_ for the _Workload Profile_, then click the _Next_ button.
+In the Kubevirt web UI, navigate to _Workloads > Virtual Machines_, click on _Create Virtual Machine_ and then _Create with Wizard_. Name the new VM _win2012_, select _Cloned Disk_ for the _Provision Source_, select _Microsoft Windows Server 2012 R2_ for the _Operating System_, select _Custom_ for the _Flavor_, set the _Memory_ to 4GB and the _CPUs_ to 4, and select _generic_ for the _Workload Profile_, then click the _Next_ button.
 
-A _nic0_ should already be populated for the networking, so click the _Next_ button on this screen. On the _Storage_ screen, click the _Attach Disk_ button and select the _windows-2012-datavolume_ from the drop-down list. Click the blue check box, then click the _Create Virtual Machine_ button.
+In the _Networking_ view, click on the _nic0_ and change the _BINDING METHOD_ to _bridge_, click the blue checkmark, and then click the _Next_ button. In the _Storage_ view, click the _Attach Disk_ button and select the _windows-2012-datavolume_ from the drop-down list. Click the blue check box, then click the _Create Virtual Machine_ button.
+
+This will kick off a copy of the data volume, which will take a while. The VM cannot start until this is complete. You can see the related pods in the terminal.
+
+```
+oc get pods
+oc describe pod <podname>
+oc get pvc
+oc get dv
+```
+
+
 
 Back in the _Virtual Machines_ view, click the menu button to the right of the _win2012_ virtual machine, and then click _Start Virtual Machine_.
 

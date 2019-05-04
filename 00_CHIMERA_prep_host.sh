@@ -8,6 +8,7 @@ yum -y groupinstall 'Virtualization Host'
 systemctl enable libvirtd; systemctl start libvirtd
 yum -y install git vim-enhanced epel-release
 
+setenforce 0
 yum -y install nginx
 WEBHOME=/opt/dev-scripts/html
 mkdir -p $WEBHOME

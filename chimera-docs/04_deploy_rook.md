@@ -14,7 +14,7 @@ chimera-rook/cleanup.sh
 
 Login to the cluster.
 ```
-export KUBECONFIG=/root/metalshift-chimera/ocp/auth/kubeconfig
+export KUBECONFIG=/root/demo/ocp/auth/kubeconfig
 oc login -u system:admin
 ```
 

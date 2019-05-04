@@ -16,17 +16,17 @@ brctl addif baremetal enp7s0
 brctl addif baremetal enp12s0
 ```
 
-On your remote host, you may need to edit the `/etc/resolv.conf` file to move the new DNS server added by DHCP to the top of the list (only the first three name servers listed are actually used).
+> NOTE: On your remote host, you may need to edit the `/etc/resolv.conf` file to move the new DNS server added by DHCP to the top of the list (only the first three name servers listed are actually used).
 
 ## Lab
 
 The console is accessible from the deployment host via:
 [https://console-openshift-console.apps.ostest.test.metalkube.org](https://console-openshift-console.apps.ostest.test.metalkube.org)
 
-The temporary admin username is **kubeadmin** and the password can be found in the `ocp/auth/kubeadmin-password` file.
+The temporary admin username is **kubeadmin** and the password can be found in the `/root/demo/ocp/auth/kubeadmin-password` file.
 
 ```
-cat ocp/auth/kubeadmin-password
+cat /root/demo/ocp/auth/kubeadmin-password
 ```
 
 <img src="images/ocp_web_ui-login.png" alt="OpenShift Web UI Login">

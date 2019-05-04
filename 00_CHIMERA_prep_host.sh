@@ -6,7 +6,7 @@ source logging.sh
 tuned-adm profile virtual-host
 yum -y groupinstall 'Virtualization Host'
 systemctl enable libvirtd; systemctl start libvirtd
-yum -y install git vim-enhanced
+yum -y install git vim-enhanced epel-release
 
 yum -y install nginx
 WEBHOME=/opt/dev-scripts/html

@@ -27,10 +27,11 @@ sed -i "s@rook/ceph:master@rook/ceph:$ROOK_VERSION@" operator-openshift-modified
 sed -i '/ROOK_MON_HEALTHCHECK_INTERVAL/!b;n;c\          value: "30s"' operator-openshift-modified.yaml
 sed -i '/ROOK_MON_OUT_TIMEOUT/!b;n;c\          value: "40s"' operator-openshift-modified.yaml
 oc create -f operator-openshift-modified.yaml
+sleep 10
 
-oc wait --for condition=ready  pod -l app=rook-ceph-operator -n openshift-storage --timeout=240s
-oc wait --for condition=ready  pod -l app=rook-ceph-agent -n openshift-storage --timeout=240s
-oc wait --for condition=ready  pod -l app=rook-discover -n openshift-storage --timeout=240s
+oc wait --for condition=ready  pod -l app=rook-ceph-operator -n openshift-storage --timeout=1200s
+oc wait --for condition=ready  pod -l app=rook-ceph-agent -n openshift-storage --timeout=1200s
+oc wait --for condition=ready  pod -l app=rook-discover -n openshift-storage --timeout=1200s
 
 sed 's/# port: 8443/port: 8444/' cluster.yaml > cluster-modified.yaml
 sed -i 's/namespace: rook-ceph/namespace: openshift-storage/' cluster-modified.yaml
@@ -40,16 +41,19 @@ oc create -f cluster-modified.yaml
 sed 's/namespace: rook-ceph/namespace: openshift-storage/' toolbox.yaml > toolbox-modified.yaml
 sed -i "s@rook/ceph:master@rook/ceph:$ROOK_VERSION@" toolbox-modified.yaml
 oc create -f toolbox-modified.yaml
+sleep 10
 
 # enable pg_autoscaler
-oc wait --for condition=ready  pod -l app=rook-ceph-tools -n openshift-storage --timeout=360s
-oc wait --for condition=ready  pod -l app=rook-ceph-mon -n openshift-storage --timeout=360s
+oc wait --for condition=ready  pod -l app=rook-ceph-tools -n openshift-storage --timeout=1200s
+oc wait --for condition=ready  pod -l app=rook-ceph-mon -n openshift-storage --timeout=1200s
 oc -n openshift-storage exec $(oc -n openshift-storage get pod --show-all=false -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') -- ceph mgr module enable pg_autoscaler --force
 oc -n openshift-storage exec $(oc -n openshift-storage get pod --show-all=false -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') -- ceph config set global osd_pool_default_pg_autoscale_mode on
 
 # no warnings!
 oc -n openshift-storage exec $(oc -n openshift-storage get pod --show-all=false -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') -- ceph config set global mon_pg_warn_min_per_osd 1
 
+# work around pgp_num scaling slowness (will be fixed in 14.2.2)
+oc -n openshift-storage exec $(oc -n openshift-storage get pod --show-all=false -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') -- ceph config set global mgr_debug_aggressive_pg_num_changes true
 
 cat <<EOF | oc create -f -
 apiVersion: ceph.rook.io/v1
@@ -90,7 +94,11 @@ cd $ROOKPATH/cluster/examples/kubernetes/ceph/monitoring
 sed 's/namespace: rook-ceph/namespace: openshift-storage/' service-monitor.yaml > service-monitor-modified.yaml
 sed -i 's/- rook-ceph/- openshift-storage/' service-monitor-modified.yaml
 sed -i 's/rook_cluster: rook-ceph/rook_cluster: openshift-storage/' service-monitor-modified.yaml
+sed -i 's/interval: 5s/interval: 2s/' service-monitor-modified.yaml
 oc create -f service-monitor-modified.yaml
 
 cd $MIXINPATH/manifests
 oc create -f prometheus-rules.yaml
+
+# clean up mgr change (remove me after 14.2.2)
+oc -n openshift-storage exec $(oc -n openshift-storage get pod --show-all=false -l "app=rook-ceph-tools" -o jsonpath='{.items[0].metadata.name}') -- ceph config rm global mgr_debug_aggressive_pg_num_changes

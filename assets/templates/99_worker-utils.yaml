@@ -4,7 +4,7 @@ metadata:
   generation: 1
   labels:
     machineconfiguration.openshift.io/role: worker
-  name: 00-worker-dhclient-dns
+  name: 00-worker-utils
 spec:
   config:
     ignition:
@@ -14,10 +14,15 @@ spec:
       - contents:
           verification: {}
         filesystem: root
-        mode: 0664
-        path: /etc/dhcp/dhclient.conf.template
+        mode: 0775
+        path: /usr/local/bin/clusterinfo
       - contents:
           verification: {}
         filesystem: root
-        mode: 0755
-        path: /etc/NetworkManager/dispatcher.d/pre-up.d/dns-vip-prepender-worker
+        mode: 0775
+        path: /usr/local/bin/get_vip_subnet_cidr
+      - contents:
+          verification: {}
+        filesystem: root
+        mode: 0775
+        path: /usr/local/bin/fletcher8

@@ -1,0 +1,85 @@
+<domain type='{{ libvirt_domain_type }}'>
+  <name>{{ item.name }}</name>
+  <memory unit='MiB'>{{ flavors[item.flavor].memory }}</memory>
+  <vcpu>{{ flavors[item.flavor].vcpu }}</vcpu>
+
+  {{baremetal_vm_xml|default('')}}
+
+  <os>
+    <type arch='{{ libvirt_arch }}'>hvm</type>
+    <boot dev='network'/>
+    <bootmenu enable='no'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <pae/>
+  </features>
+  <cpu mode='host-passthrough'/>
+  <clock offset='utc'/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>restart</on_crash>
+  <devices>
+    <disk type='volume' device='disk'>
+      <driver name='qemu' type='qcow2' cache='unsafe'/>
+      <source pool='{{ libvirt_volume_pool }}' volume='{{ item.name }}.qcow2'/>
+      <target dev='{{ libvirt_diskdev }}' bus='{{ libvirt_diskbus }}'/>
+    </disk>
+{% if libvirt_diskbus == 'scsi' %}
+  <controller type='scsi' model='virtio-scsi' />
+{% endif %}
+{% for network in networks %}
+    <interface type='bridge'>
+      <mac address='{{ node_mac_map.get(item.name).get(network.name) }}'/>
+      <source bridge='{{ network.bridge }}'/>
+      <model type='{{ libvirt_nic_model }}'/>
+{% if network.virtualport_type is defined %}
+      <virtualport type='{{ network.virtualport_type }}'/>
+{% endif %}
+    </interface>
+{% endfor %}
+    <serial type='pty'/>
+    <console type='pty'/>
+
+{% if enable_vnc_console|bool %}
+    <input type='mouse' bus='ps2'/>
+    <graphics type='vnc' port='-1' autoport='yes'/>
+    <video>
+      <model type='cirrus' vram='9216' heads='1'/>
+    </video>
+{% endif %}
+
+{% if flavors[item.flavor].nvme_passthrough == true %}
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x{{ item.nvmepcislot }}' slot='0x00' function='0x0'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
+    </hostdev>
+{% endif %}
+
+{% if flavors[item.flavor].attach_block_device == true %}
+    <disk type='block' device='disk'>
+      <driver name='qemu' type='raw'/>
+      <source dev='{{ item.blockdev }}'/>
+      <backingStore/>
+      <target dev='vdb' bus='virtio'/>
+      <alias name='virtio-disk2'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
+    </disk>
+{% endif %}
+
+{% if flavors[item.flavor].attach_qcow2 == true %}
+    <disk type='volume' device='disk'>
+      <driver name='qemu' type='qcow2' cache='unsafe'/>
+      <source pool='{{ item.qcow2 }}' volume='{{ item.qcow2 }}.qcow2'/>
+      <target dev='sdb' bus='scsi'/>
+      <address type='drive' controller='0' bus='0' target='0' unit='1'/>
+    </disk>
+{% endif %}
+
+    {{baremetal_vm_device_xml|default('')}}
+
+  </devices>
+</domain>

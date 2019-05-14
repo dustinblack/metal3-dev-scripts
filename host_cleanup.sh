@@ -5,30 +5,24 @@ source logging.sh
 source common.sh
 
 ANSIBLE_FORCE_COLOR=true ansible-playbook \
+    -e @vm_setup_vars.yml \
     -e "working_dir=$WORKING_DIR" \
-    -e "local_working_dir=$HOME/.quickstart" \
+    -e "num_masters=$NUM_MASTERS" \
+    -e "num_workers=$NUM_WORKERS" \
+    -e "extradisks=$VM_EXTRADISKS" \
     -e "virthost=$HOSTNAME" \
-    -e @tripleo-quickstart-config/metalkube-nodes.yml \
-    -e @config/environments/dev_privileged_libvirt.yml \
-    -i tripleo-quickstart-config/metalkube-inventory.ini \
-    -b -vvv tripleo-quickstart-config/metalkube-teardown-playbook.yml
+    -e "manage_baremetal=$MANAGE_BR_BRIDGE" \
+    -i vm-setup/inventory.ini \
+    -b -vvv vm-setup/teardown-playbook.yml
 
 sudo rm -rf /etc/NetworkManager/dnsmasq.d/openshift.conf /etc/NetworkManager/conf.d/dnsmasq.conf
 # There was a bug in this file, it may need to be recreated.
 if [ "$MANAGE_PRO_BRIDGE" == "y" ]; then
+    sudo ifdown provisioning || true
     sudo rm -f /etc/sysconfig/network-scripts/ifcfg-provisioning
 fi
 # Leaving this around causes issues when the host is rebooted
 if [ "$MANAGE_BR_BRIDGE" == "y" ]; then
+    sudo ifdown baremetal || true
     sudo rm -f /etc/sysconfig/network-scripts/ifcfg-baremetal
-fi
-sudo virsh net-list --name|grep -q baremetal
-if [ "$?" == "0" ]; then
-    sudo virsh net-destroy baremetal
-    sudo virsh net-undefine baremetal
-fi
-sudo virsh net-list --name|grep -q provisioning
-if [ "$?" == "0" ]; then
-     sudo virsh net-destroy provisioning
-     sudo virsh net-undefine provisioning
 fi

@@ -12,7 +12,7 @@
                      {'name': ironic_prefix + 'master_%s'|format(item),
                       'flavor': 'master',
                       'virtualbmc_port': virtualbmc_base_port+item,
-                      'qcow2': 'nvme' + item+1|string + 'n1'}]}}"
+                      'qcow2': 'nvme%sn1'|format(item+1)}]}}"
       loop: "{{ range(0, num_masters|int)|list }}"
     
     - name: Generate vm_nodes for "{{num_workers}}" workers

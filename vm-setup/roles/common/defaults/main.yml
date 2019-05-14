@@ -31,6 +31,9 @@ flavors:
     disk: '{{worker_disk|default(default_disk)}}'
     vcpu: '{{worker_vcpu|default(default_vcpu)}}'
     extradisks: '{{extradisks}}'
+    nvme_passthrough: false
+    attach_block_device: false
+    attach_qcow2: false
 
 # For dev-scripts usage this currently needs to be set to "openshift_"
 ironic_prefix: ""
